@@ -10,7 +10,10 @@ class JenisKamar extends Model
     use HasFactory;
 
     protected $table = 'jenis_kamar';
-    protected $primaryKey = 'id_jenis_kamar';
+    protected $primaryKey = 'id_jenis_kamar'; // primary key bukan 'id'
+    public $incrementing = true;
+    protected $keyType = 'int';
+    public $timestamps = false; // tambahkan ini kalau tabel kamu tidak punya created_at & updated_at
 
     protected $fillable = [
         'jenis_kasur',
@@ -21,6 +24,6 @@ class JenisKamar extends Model
 
     public function kamar()
     {
-        return $this->hasMany(Kamar::class, 'id_jenis_kamar');
+        return $this->hasMany(Kamar::class, 'id_jenis_kamar', 'id_jenis_kamar');
     }
 }

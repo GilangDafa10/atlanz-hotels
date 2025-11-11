@@ -3,41 +3,30 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserStoreRequest;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
 class AuthController extends Controller
 {
-    // ===== REGISTER =====
-    public function register(Request $request)
+    // REGISTER
+    public function register(UserStoreRequest $request)
     {
-        // Validasi input
-        $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6',
-            'no_hp'    => 'nullable|string|max:20',
-            'id_role'  => 'nullable|exists:roles,id_role', // role opsional
-        ]);
+        $validated = $request->validated();
+        $validated['password'] = Hash::make($validated['password']);
 
-        // Simpan user ke database
-        $user = User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'password' => Hash::make($request->password),
-            'no_hp'    => $request->no_hp,
-            'id_role'  => $request->id_role,
-        ]);
+        $user = User::create($validated);
 
         return response()->json([
-            'status'  => 201,
+            'status'  => true,
             'message' => 'Registrasi berhasil',
-            'data'    => $user
+            'data'    => new UserResource($user)
         ], 201);
     }
 
-    // ===== LOGIN =====
+    // LOGIN
     public function login(Request $request)
     {
         $request->validate([
@@ -49,36 +38,43 @@ class AuthController extends Controller
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
-                'status' => 401,
+                'status'  => false,
                 'message' => 'Email atau password salah',
-                'data' => []
+                'data'    => []
             ], 401);
         }
 
-        // Tentukan ability sesuai role
         $abilities = [$user->role->nama_role ?? 'user'];
-
-        // Buat token
         $token = $user->createToken('api-token', $abilities)->plainTextToken;
 
         return response()->json([
-            'status' => 200,
+            'status'  => true,
             'message' => 'Login berhasil',
-            'data' => [
+            'data'    => [
                 'token' => $token
             ]
-        ]);
+        ], 200);
     }
 
-    // ===== LOGOUT =====
+    // DETAIL USER LOGIN
+    public function me(Request $request)
+    {
+        return response()->json([
+            'status'  => true,
+            'message' => 'Detail user login',
+            'data'    => new UserResource($request->user())
+        ], 200);
+    }
+
+    // LOGOUT
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
 
         return response()->json([
-            'status' => 200,
+            'status'  => true,
             'message' => 'Logout berhasil',
-            'data' => []
-        ]);
+            'data'    => []
+        ], 201);
     }
 }

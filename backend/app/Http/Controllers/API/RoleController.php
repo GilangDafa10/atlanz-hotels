@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller; // <-- WAJIB DITAMBAHKAN
 use App\Models\Role;
@@ -19,10 +19,10 @@ class RoleController extends Controller
     {
         $roles = Role::all();
         return response()->json([
-            'status' => 200,
+            'status' => true,
             'message' => 'List all roles',
             'data' => $roles
-        ]);
+        ], 200);
     }
 
     // 2. INSERT ROLE
@@ -37,10 +37,10 @@ class RoleController extends Controller
         ]);
 
         return response()->json([
-            'status' => 201,
+            'status' => true,
             'message' => 'Role berhasil ditambahkan',
             'data' => $role
-        ]);
+        ], 201);
     }
 
     // 3. GET ROLE BY ID
@@ -50,17 +50,17 @@ class RoleController extends Controller
 
         if (!$role) {
             return response()->json([
-                'status' => 404,
+                'status' => false,
                 'message' => 'Role tidak ditemukan',
                 'data' => []
-            ]);
+            ], 400);
         }
 
         return response()->json([
-            'status' => 200,
+            'status' => true,
             'message' => 'Detail role',
             'data' => $role
-        ]);
+        ], 200);
     }
 
     // 4. UPDATE ROLE
@@ -70,10 +70,10 @@ class RoleController extends Controller
 
         if (!$role) {
             return response()->json([
-                'status' => 404,
+                'status' => false,
                 'message' => 'Role tidak ditemukan',
                 'data' => []
-            ]);
+            ], 400);
         }
 
         $role->update([
@@ -81,10 +81,10 @@ class RoleController extends Controller
         ]);
 
         return response()->json([
-            'status' => 200,
+            'status' => true,
             'message' => 'Role berhasil diupdate',
             'data' => $role
-        ]);
+        ], 201);
     }
 
     // 5. DELETE ROLE
@@ -94,18 +94,17 @@ class RoleController extends Controller
 
         if (!$role) {
             return response()->json([
-                'status' => 404,
+                'status' => false,
                 'message' => 'Role tidak ditemukan',
                 'data' => []
-            ]);
+            ], 400);
         }
 
         $role->delete();
-
         return response()->json([
-            'status' => 200,
+            'status' => true,
             'message' => 'Role berhasil dihapus',
             'data' => []
-        ]);
+        ], 202);
     }
 }
