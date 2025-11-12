@@ -4,13 +4,8 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class JenisKamarRequest extends FormRequest
+class JenisKamarStoreRequest extends FormRequest
 {
-    public function authorize()
-    {
-        return true;
-    }
-
     public function rules()
     {
         return [

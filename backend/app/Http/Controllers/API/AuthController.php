@@ -59,20 +59,51 @@ class AuthController extends Controller
         return response()->json([
             'status'  => true,
             'message' => 'Login berhasil',
-            'data'    => [
-                'token' => $token,
-                'expires_at' => $expiresAt->toDateTimeString()
-            ]
+            'data'    => ['token' => $token]
+        ], 200);
+    }
+
+    // 
+    public function update(UserStoreRequest $request, $id) 
+    {
+        $validated = $request->validated();
+
+        if (auth()->user()->id !== (int) $id) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Anda tidak memiliki izin untuk memperbarui data user ini',
+                'data'    => []
+            ], 403);
+        }
+
+        $user = User::where('id', $id)->first();
+
+        if (!$user) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'User tidak ditemukan',
+                'data'    => []
+            ], 404);
+        }
+
+        $user->update($validated);
+
+        return response()->json([
+            'status'  => true,
+            'message' => 'User berhasil diperbarui',
+            'data'    => new UserResource($user)
         ], 200);
     }
 
     // DETAIL USER LOGIN
     public function me(Request $request)
     {
+        $user = $request->user()->load('role');
+
         return response()->json([
             'status'  => true,
             'message' => 'Detail user login',
-            'data'    => new UserResource($request->user())
+            'data'    => new UserResource($user)
         ], 200);
     }
 

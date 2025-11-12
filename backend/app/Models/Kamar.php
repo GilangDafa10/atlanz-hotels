@@ -11,9 +11,6 @@ class Kamar extends Model
 
     protected $table = 'kamar';
     protected $primaryKey = 'id_kamar';
-    public $incrementing = true;
-    protected $keyType = 'int';
-    public $timestamps = false; // <-- tambahkan ini
 
     protected $fillable = [
         'nomor_kamar',

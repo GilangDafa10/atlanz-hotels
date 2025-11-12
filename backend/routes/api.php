@@ -15,6 +15,7 @@ Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function ()
 
     // Auth - user yang login
     Route::get('/me', [AuthController::class, 'me']);
+    Route::put('/profile/{id}', [AuthController::class, 'update']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
     // ROLE

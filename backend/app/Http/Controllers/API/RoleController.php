@@ -2,109 +2,136 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller; // <-- WAJIB DITAMBAHKAN
+use App\Http\Controllers\Controller;
+use App\Http\Requests\RoleStoreRequest;
+use App\Http\Resources\RoleResource;
 use App\Models\Role;
-use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
-    public function __construct()
-    {
-        // Pastikan controller API ini hanya bisa diakses dengan token yang valid
-        $this->middleware('auth:sanctum');
-    }
-
-    // 1. GET ALL
+    /**
+     * GET - Ambil semua data role
+     */
     public function index()
     {
         $roles = Role::all();
+
+        if ($roles->isEmpty()) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Belum ada data role',
+                'data'    => []
+            ], 404);
+        }
+
         return response()->json([
-            'status' => true,
-            'message' => 'List all roles',
-            'data' => $roles
+            'status'  => true,
+            'message' => 'Daftar semua role berhasil diambil',
+            'data'    => RoleResource::collection($roles)
         ], 200);
     }
 
-    // 2. INSERT ROLE
-    public function store(Request $request)
+    /**
+     * POST - Tambah role baru
+     */
+    public function store(RoleStoreRequest $request)
     {
-        $request->validate([
-            'nama_role' => 'required|string|max:100'
-        ]);
+        $validated = $request->validated();
 
-        $role = Role::create([
-            'nama_role' => $request->nama_role
-        ]);
+        $role = Role::create($validated);
+
+        if (!$role) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Gagal menambahkan role',
+                'data'    => []
+            ], 500);
+        }
 
         return response()->json([
-            'status' => true,
+            'status'  => true,
             'message' => 'Role berhasil ditambahkan',
-            'data' => $role
+            'data'    => new RoleResource($role)
         ], 201);
     }
 
-    // 3. GET ROLE BY ID
+    /**
+     * GET - Ambil detail role berdasarkan ID
+     */
     public function show($id_role)
     {
-        $role = Role::find($id_role);
+        $role = Role::where('id_role', $id_role)->first();
 
         if (!$role) {
             return response()->json([
-                'status' => false,
+                'status'  => false,
                 'message' => 'Role tidak ditemukan',
-                'data' => []
-            ], 400);
+                'data'    => []
+            ], 404);
         }
 
         return response()->json([
-            'status' => true,
-            'message' => 'Detail role',
-            'data' => $role
+            'status'  => true,
+            'message' => 'Detail role berhasil diambil',
+            'data'    => new RoleResource($role)
         ], 200);
     }
 
-    // 4. UPDATE ROLE
-    public function update(Request $request, $id_role)
+    /**
+     * PUT - Update data role berdasarkan ID
+     */
+    public function update(RoleStoreRequest $request, $id_role)
     {
-        $role = Role::find($id_role);
+        $validated = $request->validated();
+
+        $role = Role::where('id_role', $id_role)->first();
 
         if (!$role) {
             return response()->json([
-                'status' => false,
+                'status'  => false,
                 'message' => 'Role tidak ditemukan',
-                'data' => []
-            ], 400);
+                'data'    => []
+            ], 404);
         }
 
-        $role->update([
-            'nama_role' => $request->nama_role
-        ]);
+        $updated = $role->update($validated);
+
+        if (!$updated) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Gagal memperbarui role',
+                'data'    => []
+            ], 500);
+        }
 
         return response()->json([
-            'status' => true,
-            'message' => 'Role berhasil diupdate',
-            'data' => $role
+            'status'  => true,
+            'message' => 'Role berhasil diperbarui',
+            'data'    => new RoleResource($role)
         ], 201);
     }
 
-    // 5. DELETE ROLE
+    /**
+     * DELETE - Hapus role berdasarkan ID
+     */
     public function destroy($id_role)
     {
-        $role = Role::find($id_role);
+        $role = Role::where('id_role', $id_role)->first();
 
         if (!$role) {
             return response()->json([
-                'status' => false,
+                'status'  => false,
                 'message' => 'Role tidak ditemukan',
-                'data' => []
-            ], 400);
+                'data'    => []
+            ], 404);
         }
 
         $role->delete();
+
         return response()->json([
-            'status' => true,
+            'status'  => true,
             'message' => 'Role berhasil dihapus',
-            'data' => []
+            'data'    => []
         ], 202);
     }
 }
