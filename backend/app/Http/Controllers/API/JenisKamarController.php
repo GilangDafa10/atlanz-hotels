@@ -32,7 +32,8 @@ class JenisKamarController extends Controller
         if (!$jenis) {
             return response()->json([
                 'status' => true,
-                'message' => 'Jenis kamar tidak ditemukan'
+                'message' => 'Jenis kamar tidak ditemukan',
+                'data' => []
             ], 404);
         }
 
@@ -46,7 +47,8 @@ class JenisKamarController extends Controller
         if (!$jenis) {
             return response()->json([
                 'status' => false,
-                'message' => 'Jenis kamar tidak ditemukan'
+                'message' => 'Jenis kamar tidak ditemukan',
+                'data' => []
             ], 404);
         }
 
@@ -61,14 +63,16 @@ class JenisKamarController extends Controller
         if (!$jenis) {
             return response()->json([
                 'status' => false,
-                'message' => 'Jenis kamar tidak ditemukan'
+                'message' => 'Jenis kamar tidak ditemukan',
+                'data' => []
             ], 404);
         }
 
         $jenis->delete();
         return response()->json([
             'status' => true,
-            'message' => 'Jenis kamar berhasil dihapus'
+            'message' => 'Jenis kamar berhasil dihapus',
+            'data'    => []
         ], 202);
     }
 }

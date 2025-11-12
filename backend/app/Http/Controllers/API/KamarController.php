@@ -70,7 +70,8 @@ class KamarController extends Controller
         if (!$kamar) {
             return response()->json([
                 'status' => false,
-                'message' => 'Kamar tidak ditemukan'
+                'message' => 'Kamar tidak ditemukan',
+                'data' => []
             ], 404);
         }
 
@@ -91,7 +92,8 @@ class KamarController extends Controller
         if (!$kamar) {
             return response()->json([
                 'status' => false,
-                'message' => 'Kamar tidak ditemukan'
+                'message' => 'Kamar tidak ditemukan',
+                'data' => []
             ], 404);
         }
 
@@ -99,7 +101,8 @@ class KamarController extends Controller
 
         return response()->json([
             'status' => true,
-            'message' => 'Kamar berhasil dihapus'
+            'message' => 'Kamar berhasil dihapus',
+            'data' => []
         ], 200);
     }
 }

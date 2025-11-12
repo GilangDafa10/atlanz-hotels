@@ -32,6 +32,10 @@ return Application::configure(basePath: dirname(__DIR__))
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ]);
+
+        $middleware->alias([
+            'check.token.expiration' => \App\Http\Middleware\CheckTokenExpiration::class,
+        ]);
     })
 
     ->withExceptions(function (Exceptions $exceptions): void {

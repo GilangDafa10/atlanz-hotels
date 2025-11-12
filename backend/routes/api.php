@@ -11,7 +11,7 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 // ===== ROUTE YANG HARUS LOGIN =====
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function () {
 
     // Auth - user yang login
     Route::get('/me', [AuthController::class, 'me']);

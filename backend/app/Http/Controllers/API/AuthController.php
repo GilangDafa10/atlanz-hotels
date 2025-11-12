@@ -8,6 +8,7 @@ use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use Carbon\Carbon;
 
 class AuthController extends Controller
 {
@@ -26,7 +27,6 @@ class AuthController extends Controller
         ], 201);
     }
 
-    // LOGIN
     public function login(Request $request)
     {
         $request->validate([
@@ -44,14 +44,24 @@ class AuthController extends Controller
             ], 401);
         }
 
-        $abilities = [$user->role->nama_role ?? 'user'];
-        $token = $user->createToken('api-token', $abilities)->plainTextToken;
+        // Tentukan durasi token berlaku
+        $expiresAt = Carbon::now()->addHour(); // ubah di sini sesuai keinginan kamu
+
+        // Buat token baru
+        $tokenResult = $user->createToken('api-token');
+        $token = $tokenResult->plainTextToken;
+
+        // Simpan waktu kedaluwarsa di database
+        $user->tokens()
+            ->where('id', explode('|', $token)[0])
+            ->update(['expires_at' => $expiresAt]);
 
         return response()->json([
             'status'  => true,
             'message' => 'Login berhasil',
             'data'    => [
-                'token' => $token
+                'token' => $token,
+                'expires_at' => $expiresAt->toDateTimeString()
             ]
         ], 200);
     }
