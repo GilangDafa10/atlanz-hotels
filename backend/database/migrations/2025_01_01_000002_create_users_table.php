@@ -12,13 +12,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
+            $table->id('id'); // primary key
+            $table->unsignedBigInteger('id_role')->nullable(); // relasi ke tabel roles
+
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('no_hp')->nullable(); // tambahkan jika kamu ingin kolom no_hp
             $table->rememberToken();
             $table->timestamps();
+
+            // relasi foreign key
+            $table->foreign('id_role')->references('id_role')->on('roles')->onDelete('set null');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
