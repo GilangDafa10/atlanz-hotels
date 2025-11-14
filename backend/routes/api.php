@@ -24,6 +24,7 @@ Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function ()
     Route::get('/kamar', [KamarController::class, 'index']);
     Route::get('/kamar/{id_kamar}', [KamarController::class, 'show']);
     Route::get('/additional-service', [AdditionalServiceController::class, 'index']);
+    Route::get('/additional-service/{id_service}', [AdditionalServiceController::class, 'show']);
 
     // 🔒 Routes KHUSUS ADMIN (id_role = 1)
     Route::middleware(['check.role:1'])->group(function () {
@@ -46,5 +47,9 @@ Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function ()
 
         // Additional Service (Admin-only actions)
         Route::post('/additional-service', [AdditionalServiceController::class, 'store']);
+        Route::put('/additional-service/{id_service}', [AdditionalServiceController::class, 'update']);
+        Route::delete('/additional-service/{id_service}', [AdditionalServiceController::class, 'destroy']);
+        
+
     });
 });
