@@ -35,6 +35,8 @@ Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function ()
     */
     Route::middleware(['check.role:1'])->group(function () {
         // ROLE
+        Route::get('/roles', [RoleController::class, 'index']);
+        Route::get('/roles/{id_role}', [RoleController::class, 'show']);
         Route::post('/roles', [RoleController::class, 'store']);
         Route::put('/roles/{id_role}', [RoleController::class, 'update']);
         Route::delete('/roles/{id_role}', [RoleController::class, 'destroy']);
@@ -57,10 +59,6 @@ Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function ()
     | Hanya user dengan id_role = 2 yang bisa mengakses route di sini.
     */
     Route::middleware(['check.role:2'])->group(function () {
-        // ROLE
-        Route::get('/roles', [RoleController::class, 'index']);
-        Route::get('/roles/{id_role}', [RoleController::class, 'show']);
-
         // JENIS KAMAR
         Route::get('/jenis-kamar', [JenisKamarController::class, 'index']);
         Route::get('/jenis-kamar/{id_jenis_kamar}', [JenisKamarController::class, 'show']);
