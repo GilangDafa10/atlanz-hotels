@@ -52,13 +52,8 @@ class CheckRoleMiddleware
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        // roles bisa berupa string '1,2' jika kernel mengirimkannya sebagai satu parameter; flatten dan split
-        $allowed = [];
-        foreach ($roles as $r) {
-            // split by comma and trim spaces
-            $parts = array_map('trim', explode(',', $r));
-            $allowed = array_merge($allowed, $parts);
-        }
+        $allowed = array_map('strval', $roles); // Cast semua ke string
+        $userRole = strval($user->id_role);
 
         // Pastikan tipe perbandingan konsisten (string/int) -> cast semua ke string untuk perbandingan
         $allowed = array_map('strval', $allowed);
