@@ -5,6 +5,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\RoleController;
 use App\Http\Controllers\API\JenisKamarController;
 use App\Http\Controllers\API\KamarController;
+use App\Http\Controllers\API\AdditionalService;
 
 /*
 |--------------------------------------------------------------------------
@@ -66,6 +67,9 @@ Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function ()
         // KAMAR
         Route::get('/kamar', [KamarController::class, 'index']);
         Route::get('/kamar/{id_kamar}', [KamarController::class, 'show']);
+
+        // Additional Service
+        Route::get('/additional-service', [AdditionalService::class, 'index']);
     });
 
     /*

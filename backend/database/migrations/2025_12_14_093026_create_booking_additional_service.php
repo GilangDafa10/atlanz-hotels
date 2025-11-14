@@ -12,8 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('booking_additional_service', function (Blueprint $table) {
-            $table->foreignId('id_booking')->constrained('bookings');
-            $table->foreignId('id_service')->constrained('additional_services');
+            $table->unsignedBigInteger('id_booking');
+            $table->unsignedBigInteger('id_service');
+
+            $table->foreign('id_booking')
+                ->references('id_booking')->on('bookings')
+                ->onDelete('cascade');
+
+            $table->foreign('id_service')
+                ->references('id_service')->on('additional_services')
+                ->onDelete('cascade');
             $table->integer('harga_saat_booking');
             $table->timestamps();
         });
