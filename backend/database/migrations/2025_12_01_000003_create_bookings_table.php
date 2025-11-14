@@ -19,8 +19,21 @@ return new class extends Migration
             $table->date('tgl_checkin');
             $table->date('tgl_checkout');
             $table->date('tgl_booking');
-            $table->foreignId('id_user')->constrained('users');
-            $table->foreignId('id_kamar')->constrained('kamars');
+
+            $table->unsignedBigInteger('id_user');
+            $table->foreign('id_user')
+                ->references('id')
+                ->on('users')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
+
+            $table->unsignedBigInteger('id_kamar'); 
+            $table->foreign('id_kamar')
+                ->references('id_kamar')
+                ->on('kamar')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
+
             $table->timestamps();
         });
     }
