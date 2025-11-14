@@ -13,11 +13,25 @@ class AdditionalServiceStoreRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'nama_service' => 'required|string|max:255',
-            'deskripsi_service' => 'required|string', 
-            'harga_service' => 'required|integer|min:0',
-            'url_gambar' => 'required|string'
-        ];
+        $method = $this->method();
+
+        switch ($method) {
+            case 'POST':
+                return [
+                    'nama_service' => 'required|string|max:255',
+                    'deskripsi_service' => 'required|string',
+                    'harga_service' => 'required|numeric|min:0',
+                    'url_gambar' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
+                ];
+            case 'PUT':
+                return [
+                    'nama_service' => 'sometimes|string|max:255',
+                    'deskripsi_service' => 'sometimes|string',
+                    'harga_service' => 'sometimes|numeric|min:0',
+                    'url_gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
+                ];
+            default:
+                return [];
+        }
     }
 }
