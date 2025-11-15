@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('id_pembayaran');
             $table->foreignId('id_booking')->constrained('bookings');
             $table->string('metode')->default('qris');
-            $table->enum('status_pembayaran', ['pending', 'gagal'])->default('pending');
+            $table->enum('status_pembayaran', ['pending', 'dibayar', 'gagal'])->default('pending');
             $table->timestamp('tanggal_bayar')->nullable();
             $table->string('id_transaksi')->unique();
             $table->string('link_pembayaran');

@@ -6,10 +6,14 @@ use App\Http\Controllers\API\RoleController;
 use App\Http\Controllers\API\JenisKamarController;
 use App\Http\Controllers\API\KamarController;
 use App\Http\Controllers\Api\AdditionalServiceController;
+use App\Http\Controllers\Api\PembayaranController;
 
 // PUBLIC ROUTES
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+
+// Midtrans
+Route::post('/midtrans-notification', [PembayaranController::class, 'notificationHandler']);
 
 // PROTECTED ROUTES (login required)
 Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function () {
@@ -25,6 +29,10 @@ Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function ()
     Route::get('/kamar/{id_kamar}', [KamarController::class, 'show']);
     Route::get('/additional-service', [AdditionalServiceController::class, 'index']);
     Route::get('/additional-service/{id_service}', [AdditionalServiceController::class, 'show']);
+
+    // Midtrans
+    Route::post('/booking/{id_booking}/invoice', [PembayaranController::class, 'createInvoice']);
+    Route::get('/pembayaran/{id_pembayaran}/status', [PembayaranController::class, 'checkStatus']);
 
     // 🔒 Routes KHUSUS ADMIN (id_role = 1)
     Route::middleware(['check.role:1'])->group(function () {
