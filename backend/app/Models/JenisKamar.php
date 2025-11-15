@@ -23,4 +23,9 @@ class JenisKamar extends Model
     {
         return $this->hasMany(Kamar::class, 'id_jenis_kamar', 'id_jenis_kamar');
     }
+
+        public function fasilitasJenisKamar()
+    {
+        return $this->hasMany(FasilitasJenisKamar::class, 'id_jenis_kamar', 'id_jenis_kamar');
+    }
 }
