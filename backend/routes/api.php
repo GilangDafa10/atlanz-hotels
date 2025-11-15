@@ -8,6 +8,7 @@ use App\Http\Controllers\API\KamarController;
 use App\Http\Controllers\API\AdditionalServiceController;
 use App\Http\Controllers\API\FasilitasController;
 use App\Http\Controllers\API\FasilitasJenisKamarController;
+use App\Http\Controllers\API\PembayaranController;
 
 // ================================
 // PUBLIC ROUTES
@@ -15,10 +16,10 @@ use App\Http\Controllers\API\FasilitasJenisKamarController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
+// Midtrans
+Route::post('/midtrans-notification', [PembayaranController::class, 'notificationHandler']);
 
-// ================================
-// PROTECTED ROUTES (Login Required)
-// ================================
+// PROTECTED ROUTES (login required)
 Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function () {
 
     // ============================================
@@ -37,6 +38,10 @@ Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function ()
 
     Route::get('/additional-service', [AdditionalServiceController::class, 'index']);
     Route::get('/additional-service/{id_service}', [AdditionalServiceController::class, 'show']);
+
+    // Midtrans
+    Route::post('/booking/{id_booking}/invoice', [PembayaranController::class, 'createInvoice']);
+    Route::get('/pembayaran/{id_pembayaran}/status', [PembayaranController::class, 'checkStatus']);
 
     // ========== READ-ONLY Fasilitas & FasilitasJenisKamar ==========
     // USER (ROLE 2) dan ADMIN bisa mengakses READ-ONLY
