@@ -25,4 +25,9 @@ class Booking extends Model
             ->withPivot('harga_saat_booking')
             ->withTimestamps();
     }
+
+    public function pembayaran()
+    {
+        return $this->hasOne(Pembayaran::class, 'id_booking');
+    }
 }
