@@ -36,20 +36,22 @@ class JenisKamarController extends Controller
      */
     public function store(JenisKamarStoreRequest $request)
     {
-        $jenis = JenisKamar::create($request->validated());
+        $payload = $request->validated();
 
-        if (!$jenis) {
-            return response()->json([
-                'status'  => false,
-                'message' => 'Gagal menambahkan jenis kamar',
-                'data'    => []
-            ], 500);
+        $fasilitas = $payload['fasilitas'] ?? null;
+        unset($payload['fasilitas']);
+
+        $jenis = JenisKamar::create($payload);
+
+        if ($fasilitas !== null) {
+            $fasilitasIds = is_array($fasilitas) ? $fasilitas : [$fasilitas];
+            $jenis->fasilitas()->attach($fasilitasIds);
         }
 
         return response()->json([
-            'status'  => true,
+            'status' => true,
             'message' => 'Berhasil menambahkan jenis kamar',
-            'data'    => new JenisKamarResource($jenis)
+            'data' => new JenisKamarResource($jenis->load('fasilitas'))
         ], 201);
     }
 
@@ -78,24 +80,33 @@ class JenisKamarController extends Controller
     /**
      * PUT - Update data jenis kamar berdasarkan ID
      */
-    public function update(JenisKamarStoreRequest $request, $id_jenis_kamar)
+    public function update(JenisKamarStoreRequest $request, $id)
     {
-        $jenis = JenisKamar::where('id_jenis_kamar', $id_jenis_kamar)->first();
+        $jenis = JenisKamar::find($id);
 
         if (!$jenis) {
             return response()->json([
-                'status'  => false,
+                'status' => false,
                 'message' => 'Jenis kamar tidak ditemukan',
-                'data'    => []
+                'data' => []
             ], 404);
         }
 
-        $jenis->update($request->validated());
+        $payload = $request->validated();
+        $fasilitas = $payload['fasilitas'] ?? null;
+        unset($payload['fasilitas']);
+
+        $jenis->update($payload);
+
+        if ($fasilitas !== null) {
+            $fasilitasIds = is_array($fasilitas) ? $fasilitas : [$fasilitas];
+            $jenis->fasilitas()->sync($fasilitasIds);
+        }
 
         return response()->json([
-            'status'  => true,
-            'message' => 'Jenis kamar berhasil diperbarui',
-            'data'    => new JenisKamarResource($jenis)
+            'status' => true,
+            'message' => 'Berhasil memperbarui jenis kamar',
+            'data' => new JenisKamarResource($jenis->load('fasilitas'))
         ], 200);
     }
 
