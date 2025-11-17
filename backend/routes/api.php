@@ -46,6 +46,8 @@ Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function ()
     // booking
     Route::post('/booking', [BookingController::class, 'store']);
     Route::get('/booking', [BookingController::class, 'index']);
+    Route::get('/booking/{id_booking}', [BookingController::class, 'show']);
+    Route::get('/booking/batal/{id_booking}', [BookingController::class, 'destroy']);
 
     // ========== READ-ONLY Fasilitas & FasilitasJenisKamar ==========
     // USER (ROLE 2) dan ADMIN bisa mengakses READ-ONLY
