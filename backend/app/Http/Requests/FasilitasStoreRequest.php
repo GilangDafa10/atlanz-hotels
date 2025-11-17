@@ -10,6 +10,7 @@ class FasilitasStoreRequest extends FormRequest
     {
         return [
             'nama_fasilitas' => 'required|string|max:255',
+            'icon_fasilitas' => 'required|string|max:255',
         ];
     }
 }
