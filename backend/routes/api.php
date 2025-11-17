@@ -20,6 +20,10 @@ Route::post('/login', [AuthController::class, 'login']);
 // Midtrans
 Route::post('/midtrans-notification', [PembayaranController::class, 'notificationHandler']);
 
+Route::get('/jenis-kamar', [JenisKamarController::class, 'index']);
+Route::get('/additional-service', [AdditionalServiceController::class, 'index']);
+Route::get('/fasilitas', [FasilitasController::class, 'index']);
+
 // PROTECTED ROUTES (login required)
 Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function () {
 
@@ -31,13 +35,11 @@ Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function ()
     Route::post('/logout', [AuthController::class, 'logout']);
 
     // ========== READ ONLY (Admin & User) ==========
-    Route::get('/jenis-kamar', [JenisKamarController::class, 'index']);
     Route::get('/jenis-kamar/{id_jenis_kamar}', [JenisKamarController::class, 'show']);
 
     Route::get('/kamar', [KamarController::class, 'index']);
     Route::get('/kamar/{id_kamar}', [KamarController::class, 'show']);
 
-    Route::get('/additional-service', [AdditionalServiceController::class, 'index']);
     Route::get('/additional-service/{id_service}', [AdditionalServiceController::class, 'show']);
 
     // Midtrans
@@ -52,7 +54,6 @@ Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function ()
 
     // ========== READ-ONLY Fasilitas & FasilitasJenisKamar ==========
     // USER (ROLE 2) dan ADMIN bisa mengakses READ-ONLY
-    Route::get('/fasilitas', [FasilitasController::class, 'index']);
     Route::get('/fasilitas/{id_fasilitas}', [FasilitasController::class, 'show']);
 
     // ================================
