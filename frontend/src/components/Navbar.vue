@@ -9,6 +9,7 @@
       <li><a href="#">Rooms</a></li>
       <li><a href="#">Contact-us</a></li>
       <li><a href="#">Book</a></li>
+      <li><a href="#">Login</a></li>
     </ul>
   </nav>
 </template>

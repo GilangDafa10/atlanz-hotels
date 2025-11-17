@@ -3,6 +3,10 @@ import { createRouter, createWebHistory } from "vue-router";
 // Import pages
 import Home from "../pages/Home.vue";
 import Rooms from "../pages/Rooms.vue";
+import Booking from "../pages/Booking.vue";
+import AddService from "@/pages/AddService.vue";
+import Profile from "@/pages/Profil.vue";
+import Reservation from "@/pages/Reservation.vue";
 // import About from "../pages/About.vue";
 // import DetailMobil from "../pages/DetailMobil.vue";
 
@@ -16,6 +20,26 @@ const routes = [
         path: "/rooms",
         name: "rooms",
         component: Rooms,
+    },
+    {
+        path: "/booking",
+        name: "booking",
+        component: Booking,
+    },
+    {
+        path: "/AddService",
+        name: "addservice",
+        component: AddService,
+    },
+    {
+        path: "/Profile",
+        name: "profile",
+        component: Profile,
+    },
+    {
+        path: "/Reservation",
+        name: "reservation",
+        component: Reservation, 
     },
     // {
     //     path: "/about",
