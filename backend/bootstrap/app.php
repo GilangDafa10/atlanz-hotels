@@ -29,12 +29,12 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // ✅ Middleware untuk route API (ini yang penting!)
         $middleware->group('api', [
-            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ]);
 
         $middleware->alias([
             'check.token.expiration' => \App\Http\Middleware\CheckTokenExpiration::class,
+            'check.role' => \App\Http\Middleware\CheckRoleMiddleware::class,
         ]);
     })
 
