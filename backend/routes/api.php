@@ -6,8 +6,8 @@ use App\Http\Controllers\API\RoleController;
 use App\Http\Controllers\API\JenisKamarController;
 use App\Http\Controllers\API\KamarController;
 use App\Http\Controllers\API\AdditionalServiceController;
+use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\API\FasilitasController;
-use App\Http\Controllers\API\FasilitasJenisKamarController;
 use App\Http\Controllers\API\PembayaranController;
 
 // ================================
@@ -43,14 +43,14 @@ Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function ()
     Route::post('/booking/{id_booking}/invoice', [PembayaranController::class, 'createInvoice']);
     Route::get('/pembayaran/{id_pembayaran}/status', [PembayaranController::class, 'checkStatus']);
 
+    // booking
+    Route::post('/booking', [BookingController::class, 'store']);
+    Route::get('/booking', [BookingController::class, 'index']);
+
     // ========== READ-ONLY Fasilitas & FasilitasJenisKamar ==========
     // USER (ROLE 2) dan ADMIN bisa mengakses READ-ONLY
     Route::get('/fasilitas', [FasilitasController::class, 'index']);
     Route::get('/fasilitas/{id_fasilitas}', [FasilitasController::class, 'show']);
-
-    Route::get('/fasilitas-jenis-kamar', [FasilitasJenisKamarController::class, 'index']);
-    Route::get('/fasilitas-jenis-kamar/{id}', [FasilitasJenisKamarController::class, 'show']);
-
 
     // ================================
     // ADMIN ONLY (id_role = 1)
@@ -83,10 +83,5 @@ Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function ()
         Route::post('/fasilitas', [FasilitasController::class, 'store']);
         Route::put('/fasilitas/{id_fasilitas}', [FasilitasController::class, 'update']);
         Route::delete('/fasilitas/{id_fasilitas}', [FasilitasController::class, 'destroy']);
-
-        // ===== FASILITAS JENIS KAMAR CRUD (ADMIN) =====
-        Route::post('/fasilitas-jenis-kamar', [FasilitasJenisKamarController::class, 'store']);
-        Route::put('/fasilitas-jenis-kamar/{id}', [FasilitasJenisKamarController::class, 'update']);
-        Route::delete('/fasilitas-jenis-kamar/{id}', [FasilitasJenisKamarController::class, 'destroy']);
     });
 });

@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Midtrans\Notification;
 use Midtrans\Snap;
+use Illuminate\Support\Facades\Log;
 
 class PembayaranController extends Controller
 {
@@ -17,6 +18,12 @@ class PembayaranController extends Controller
     {
         DB::beginTransaction();
         try {
+            \Midtrans\Config::$serverKey = config('midtrans.server_key');
+            \Midtrans\Config::$clientKey = config('midtrans.client_key');
+            \Midtrans\Config::$isProduction = config('midtrans.is_production');
+            \Midtrans\Config::$isSanitized = true;
+            \Midtrans\Config::$is3ds = true;
+
             $booking = Booking::with(['user', 'pembayaran'])->find($id_booking);
 
             if (!$booking) {
@@ -55,6 +62,7 @@ class PembayaranController extends Controller
                 } else {
                     $existingPayment->delete();
                 }
+            }
 
             $transactionId = 'ATLANZ-' . strtoupper(substr(uniqid(), -8)) . '-' . $id_booking;
             
@@ -68,10 +76,8 @@ class PembayaranController extends Controller
                     'email' => $booking->user->email ?? 'pelanggan@hotel.com',
                     'no_hp' => $booking->user->no_hp ?? '081234567890',
                 ],
-                'enabled_payments' => ['qris'],
-                'qris' => [
-                    'acquirer' => 'gopay',
-                    'expired_time' => 15 * 60,
+                'enabled_payments' => [
+                    'other_qris'
                 ],
                 'item_details' => [
                     [
@@ -91,14 +97,47 @@ class PembayaranController extends Controller
             ];
 
             $snapResponse = Snap::createTransaction($params);
-            
+
+            // Debug response structure
+            \Log::info('Midtrans Snap Response Full:', (array) $snapResponse);
+
+            // Cari URL QRIS
+            $qrisUrl = null;
+
+            // Cek di actions
+            if (isset($snapResponse->actions) && is_array($snapResponse->actions)) {
+                foreach ($snapResponse->actions as $action) {
+                    if (isset($action->url)) {
+                        $qrisUrl = $action->url;
+                        break;
+                    }
+                }
+            }
+
+            // Fallback ke redirect_url
+            if (!$qrisUrl && isset($snapResponse->redirect_url)) {
+                $qrisUrl = $snapResponse->redirect_url;
+            }
+
+            // Jika masih null, gunakan token sebagai fallback
+            if (!$qrisUrl && isset($snapResponse->token)) {
+                $qrisUrl = "https://app.midtrans.com/snap/v2/vtweb/" . $snapResponse->token;
+            }
+
+            // Final fallback
+            if (!$qrisUrl) {
+                throw new Exception('Tidak dapat menghasilkan URL QRIS dari response Midtrans');
+            }
+
+            \Log::info('QRIS URL determined:', ['qris_url' => $qrisUrl]);
+
             $pembayaran = Pembayaran::create([
                 'id_booking' => $id_booking,
                 'metode' => 'qris',
                 'status_pembayaran' => 'pending',
                 'id_transaksi' => $transactionId,
                 'link_pembayaran' => $snapResponse->redirect_url,
-                'qris_data' => $snapResponse->actions[0]->url ?? null, 
+                'qris_data' => $qrisUrl, 
             ]);
 
             DB::commit();
@@ -109,15 +148,15 @@ class PembayaranController extends Controller
                 'data' => [
                     'id_pembayaran' => $pembayaran->id_pembayaran,
                     'id_transaksi' => $pembayaran->id_transaksi,
-                    'qris_url' => $snapResponse->actions[0]->url,
+                    'qris_url' => $qrisUrl,
                     'expiry_time' => now()->addMinutes(15)->format('Y-m-d H:i:s'),
                     'total_harga' => $booking->total_harga,
                 ]
             ], 201);
 
-            }
         } catch (Exception $e) {
             DB::rollBack();
+            \Log::error('Create invoice error:', ['error' => $e->getMessage()]);
             return response()->json([
                 'status' => false,
                 'message' => 'Gagal membuat invoice QRIS. Silakan coba lagi.',
@@ -129,115 +168,65 @@ class PembayaranController extends Controller
     public function notificationHandler(Request $request)
     {
         try {
-            $notif = new Notification();
-            
-            if (!$notif->isSignatureKeyVerified()) {
-                $logData = [
-                    'ip' => $request->ip(),
-                    'payload' => $request->all(),
-                    'signature' => $request->header('X-Midtrans-Signature-Key')
-                ];
+            $data = $request->all();
+
+            Log::info('Midtrans Notification Received:', $data);
+
+            $transactionId = $data['order_id'] ?? null;
+            $transactionStatus = $data['transaction_status'] ?? null;
+            $fraudStatus = $data['fraud_status'] ?? 'accept';
+            $grossAmount = $data['gross_amount'] ?? 0;
+
+            if (!$transactionId) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Invalid signature',
-                    'data' => null
-                ], 403);
+                    'message' => 'order_id missing',
+                ], 400);
             }
 
-            $transactionId = $notif->order_id;
-            $transactionStatus = $notif->transaction_status;
-            $fraudStatus = $notif->fraud_status ?? 'accept';
-            $grossAmount = $notif->gross_amount ?? 0;
-
             $pembayaran = Pembayaran::where('id_transaksi', $transactionId)->first();
-            
+
             if (!$pembayaran) {
                 return response()->json([
                     'status' => false,
-                    'error' => 'Transaksi tidak ditemukan',
-                    'data' => null
+                    'message' => 'Transaksi tidak ditemukan'
                 ], 404);
             }
 
             $booking = $pembayaran->booking;
-            if (!$booking) {
-                return response()->json([
-                    'status' => false,
-                    'error' => 'Booking terkait tidak ditemukan',
-                    'data' => null
-                ], 404);
-            }
 
             DB::beginTransaction();
 
-            try {
-                $oldStatus = $pembayaran->status_pembayaran;
-                $newStatus = $oldStatus;
-                $bookingStatus = $booking->status_booking;
+            $newStatus = match ($transactionStatus) {
+                'capture', 'settlement' => 'dibayar',
+                'deny', 'cancel', 'expire' => 'gagal',
+                default => 'pending',
+            };
 
-                switch ($transactionStatus) {
-                    case 'capture':
-                    case 'settlement':
-                        $newStatus = 'dibayar';
-                        $bookingStatus = 'berhasil';
-                        break;
-                        
-                    case 'deny':
-                    case 'cancel':
-                        $newStatus = 'gagal';
-                        $bookingStatus = 'batal';
-                        break;
-                        
-                    case 'expire':
-                        $newStatus = 'gagal';
-                        $bookingStatus = 'batal';
-                        break;
-                        
-                    case 'pending':
-                        $newStatus = 'pending';
-                        break;
-                }
+            $bookingStatus = match ($newStatus) {
+                'dibayar' => 'berhasil',
+                'gagal' => 'batal',
+                default => 'pending',
+            };
 
-                if ($newStatus !== $oldStatus) {
-                    $updateData = [
-                        'status_pembayaran' => $newStatus
-                    ];
-                    
-                    if ($newStatus === 'dibayar') {
-                        $updateData['tanggal_bayar'] = now();
-                    }
-                    
-                    $pembayaran->update($updateData);
-                    $booking->update(['status_booking' => $bookingStatus]);
-                }
-
-                DB::commit();
-
-                $this->sendPaymentNotification($booking, $pembayaran, $newStatus);
-
-                return response()->json([
-                    'status' => true,
-                    'message' => "Status updated to {$newStatus}",
-                    'transaction_id' => $transactionId
-                ], 200);
-
-            } catch (Exception $e) {
-                DB::rollBack();
-                return response()->json([
-                    'status' => false,
-                    'message' => 'terjadi kesalahan',
-                    'error' => $e->getMessage(),
-                    'data' => null
-                ], 500);
+            $updateData = ['status_pembayaran' => $newStatus];
+            if ($newStatus === 'dibayar') {
+                $updateData['tanggal_bayar'] = now();
             }
 
-        } catch (Exception $e) {
+            $pembayaran->update($updateData);
+            $booking->update(['status_booking' => $bookingStatus]);
+
+            DB::commit();
+
             return response()->json([
-                    'status' => false,
-                    'message' => 'terjadi kesalahan',
-                    'error' => $e->getMessage(),
-                    'data' => null
-            ], 500);
+                'status' => true,
+                'message' => 'OK',
+            ]);
+
+        } catch (Exception $e) {
+            Log::error('Midtrans Notification Error:', ['error' => $e->getMessage()]);
+            return response()->json(['status' => false, 'error' => $e->getMessage()], 500);
         }
     }
 
@@ -275,8 +264,8 @@ class PembayaranController extends Controller
                     'is_expired' => $isExpired,
                     'total_harga' => $booking->total_harga,
                     'booking_details' => [
-                        'tgl_checkin' => $booking->tgl_checkin->format('d M Y'),
-                        'tgl_checkout' => $booking->tgl_checkout->format('d M Y'),
+                        'tgl_checkin' => $booking->tgl_checkin,
+                        'tgl_checkout' => $booking->tgl_checkout,
                         'kamar' => $booking->kamar->nomor_kamar ?? 'N/A'
                     ]
                 ]

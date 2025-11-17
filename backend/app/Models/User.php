@@ -28,4 +28,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Role::class, 'id_role', 'id_role');
     }
+
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class, 'id_user');
+    }
 }

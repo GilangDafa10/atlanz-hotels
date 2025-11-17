@@ -13,7 +13,12 @@ return new class extends Migration
     {
         Schema::create('pembayarans', function (Blueprint $table) {
             $table->id('id_pembayaran');
-            $table->foreignId('id_booking')->constrained('bookings');
+            $table->unsignedBigInteger('id_booking');
+            $table->foreign('id_booking')
+                  ->references('id_booking')
+                  ->on('bookings')
+                  ->cascadeOnDelete()
+                  ->cascadeOnUpdate();
             $table->string('metode')->default('qris');
             $table->enum('status_pembayaran', ['pending', 'dibayar', 'gagal'])->default('pending');
             $table->timestamp('tanggal_bayar')->nullable();
