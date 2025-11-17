@@ -7,6 +7,7 @@ use App\Http\Controllers\API\JenisKamarController;
 use App\Http\Controllers\API\KamarController;
 use App\Http\Controllers\API\AdditionalServiceController;
 use App\Http\Controllers\Api\BookingController;
+use App\Http\Controllers\API\DashboardController;
 use App\Http\Controllers\API\FasilitasController;
 use App\Http\Controllers\API\PembayaranController;
 
@@ -85,5 +86,9 @@ Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function ()
         Route::post('/fasilitas', [FasilitasController::class, 'store']);
         Route::put('/fasilitas/{id_fasilitas}', [FasilitasController::class, 'update']);
         Route::delete('/fasilitas/{id_fasilitas}', [FasilitasController::class, 'destroy']);
+
+        // Dashboard
+        Route::get('/dashboard', [DashboardController::class, 'index']);
+
     });
 });
