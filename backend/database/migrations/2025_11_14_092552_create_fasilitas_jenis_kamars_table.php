@@ -9,16 +9,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('fasilitas_jenis_kamar', function (Blueprint $table) {
-            $table->id('id_fasilitas_jenis_kamar');
             $table->unsignedBigInteger('id_fasilitas');
             $table->unsignedBigInteger('id_jenis_kamar');
+
             $table->timestamps();
 
-            // foreign keys (sesuaikan jika nama PK berbeda)
-            $table->foreign('id_fasilitas')->references('id_fasilitas')->on('fasilitas')->onDelete('cascade');
-            $table->foreign('id_jenis_kamar')->references('id_jenis_kamar')->on('jenis_kamar')->onDelete('cascade');
+            $table->foreign('id_fasilitas')
+                ->references('id_fasilitas')->on('fasilitas')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
 
-            // optional: unik kombinasi fasilitas + jenis_kamar agar tidak duplikat
+            $table->foreign('id_jenis_kamar')
+                ->references('id_jenis_kamar')->on('jenis_kamar')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
+
             $table->unique(['id_fasilitas', 'id_jenis_kamar']);
         });
     }
