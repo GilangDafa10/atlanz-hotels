@@ -21,11 +21,6 @@
           </div>
 
           <div class="form-group">
-            <label>Username</label>
-            <input type="text" v-model="username" placeholder="Username" required />
-          </div>
-
-          <div class="form-group">
             <label>Password</label>
             <div class="password-input-wrapper">
               <input
@@ -40,8 +35,18 @@
             </div>
           </div>
 
-          <button type="submit" class="btn">Register</button>
+          <button type="submit" class="btn" :disabled="loading">
+            {{ loading ? 'Loading...' : 'Register' }}
+          </button>
         </form>
+
+        <p v-if="errorMessage" style="color:red; margin-top:10px;">
+          {{ errorMessage }}
+        </p>
+
+        <p v-if="successMessage" style="color:green; margin-top:10px;">
+          {{ successMessage }}
+        </p>
 
         <p class="footer">Have Account? <a href="#">Login</a></p>
       </div>
@@ -50,6 +55,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'Register',
   data() {
@@ -57,22 +64,47 @@ export default {
       name: '',
       email: '',
       phone: '',
-      username: '',
       password: '',
       showPassword: false,
+      loading: false,
+
+      errorMessage: null,
+      successMessage: null,
     }
   },
   methods: {
-    register() {
-      if (this.name && this.email && this.phone && this.username && this.password) {
-        alert(`Selamat datang, ${this.name}! Akun berhasil dibuat.`)
-      } else {
-        alert('Isi semua field dulu ya, Odi 😄')
+    async register() {
+      this.loading = true
+      this.errorMessage = null
+      this.successMessage = null
+
+      try {
+        const payload = {
+          name: this.name,
+          email: this.email,
+          password: this.password,
+          no_hp: this.phone,
+        }
+
+        const res = await axios.post('http://127.0.0.1:8000/api/register', payload)
+
+        this.successMessage = res.data.message || 'Register success!'
+        alert('Akun berhasil dibuat! Silakan login ya, Odi 😄')
+
+        this.$router.push('/login')
+      } catch (err) {
+        this.errorMessage =
+          err.response?.data?.errors ||
+          err.response?.data?.message ||
+          'Register gagal!'
+      } finally {
+        this.loading = false
       }
     },
   },
 }
 </script>
+
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
