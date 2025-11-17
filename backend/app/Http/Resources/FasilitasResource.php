@@ -12,6 +12,7 @@ class FasilitasResource extends JsonResource
         return [
             'id_fasilitas'   => $this->id_fasilitas,
             'nama_fasilitas' => $this->nama_fasilitas,
+            'icon_fasilitas' => $this->icon_fasilitas,
         ];
     }
 }

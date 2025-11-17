@@ -15,22 +15,15 @@ return new class extends Migration
             $table->id('id_booking');
             $table->integer('total_malam');
             $table->integer('total_harga');
-            $table->string('status_booking');
+            $table->enum('status_booking', ['pending', 'berhasil', 'batal'])->default('pending');
             $table->date('tgl_checkin');
             $table->date('tgl_checkout');
-            $table->date('tgl_booking');
+            $table->date('tgl_booking')->default(now());
 
             $table->unsignedBigInteger('id_user');
             $table->foreign('id_user')
                 ->references('id')
                 ->on('users')
-                ->cascadeOnDelete()
-                ->cascadeOnUpdate();
-
-            $table->unsignedBigInteger('id_kamar'); 
-            $table->foreign('id_kamar')
-                ->references('id_kamar')
-                ->on('kamar')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
 
