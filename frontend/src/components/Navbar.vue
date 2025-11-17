@@ -6,15 +6,14 @@
     <ul class="nav-links">
       <li><a href="#">Home</a></li>
       <li><a href="#">Facilities</a></li>
-      <li><a class="active" href="#">Rooms</a></li>
+      <li><a href="#">Rooms</a></li>
       <li><a href="#">Contact-us</a></li>
       <li><a href="#">Book</a></li>
     </ul>
   </nav>
 </template>
 
-<script setup>
-</script>
+<script setup></script>
 
 <style scoped>
 .navbar {

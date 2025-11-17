@@ -28,17 +28,13 @@
           <div class="form-group">
             <label>Password</label>
             <div class="password-input-wrapper">
-              <input 
-                :type="showPassword ? 'text' : 'password'" 
-                v-model="password" 
-                placeholder="6+ characters" 
-                required 
+              <input
+                :type="showPassword ? 'text' : 'password'"
+                v-model="password"
+                placeholder="6+ characters"
+                required
               />
-              <button 
-                type="button" 
-                class="toggle-password" 
-                @click="showPassword = !showPassword"
-              >
+              <button type="button" class="toggle-password" @click="showPassword = !showPassword">
                 👁️
               </button>
             </div>
@@ -47,9 +43,7 @@
           <button type="submit" class="btn">Register</button>
         </form>
 
-        <p class="footer">
-          Have Account? <a href="#">Login</a>
-        </p>
+        <p class="footer">Have Account? <a href="#">Login</a></p>
       </div>
     </div>
   </div>
@@ -57,27 +51,27 @@
 
 <script>
 export default {
-  name: "Register",
+  name: 'Register',
   data() {
     return {
-      name: "",
-      email: "",
-      phone: "",
-      username: "",
-      password: "",
+      name: '',
+      email: '',
+      phone: '',
+      username: '',
+      password: '',
       showPassword: false,
-    };
+    }
   },
   methods: {
     register() {
       if (this.name && this.email && this.phone && this.username && this.password) {
-        alert(`Selamat datang, ${this.name}! Akun berhasil dibuat.`);
+        alert(`Selamat datang, ${this.name}! Akun berhasil dibuat.`)
       } else {
-        alert("Isi semua field dulu ya, Odi 😄");
+        alert('Isi semua field dulu ya, Odi 😄')
       }
     },
   },
-};
+}
 </script>
 
 <style scoped>
@@ -89,7 +83,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100vh;
-  background: url("@/assets/gambar hotel.jpg") no-repeat center center/cover;
+  background: url('@/assets/gambar hotel.jpg') no-repeat center center/cover;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -102,7 +96,7 @@ export default {
   left: 0;
   height: 100%;
   width: 100%;
-  background: rgba(0, 0, 0, 0.50);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -117,8 +111,8 @@ export default {
   border-radius: 18px;
   width: 450px;
   max-width: 95%;
-  max-height: 90vh;
-  overflow-y: auto;
+  /* max-height: 90vh; */
+  /* overflow-y: auto; */
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
   text-align: center;
   color: #000;
@@ -239,6 +233,4 @@ input:focus {
 .footer a:hover {
   text-decoration: underline;
 }
-
-
 </style>
