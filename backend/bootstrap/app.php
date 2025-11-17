@@ -29,7 +29,6 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // ✅ Middleware untuk route API (ini yang penting!)
         $middleware->group('api', [
-            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ]);
 

@@ -59,12 +59,12 @@ Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function ()
         Route::put('/roles/{id_role}', [RoleController::class, 'update']);
         Route::delete('/roles/{id_role}', [RoleController::class, 'destroy']);
 
-        // ===== Jenis Kamar CRUD =====
+        // Jenis Kamar (CRUD lengkap)
         Route::post('/jenis-kamar', [JenisKamarController::class, 'store']);
         Route::put('/jenis-kamar/{id_jenis_kamar}', [JenisKamarController::class, 'update']);
         Route::delete('/jenis-kamar/{id_jenis_kamar}', [JenisKamarController::class, 'destroy']);
 
-        // ===== Kamar CRUD =====
+        // Kamar (CRUD lengkap)
         Route::post('/kamar', [KamarController::class, 'store']);
         Route::put('/kamar/{id_kamar}', [KamarController::class, 'update']);
         Route::delete('/kamar/{id_kamar}', [KamarController::class, 'destroy']);
