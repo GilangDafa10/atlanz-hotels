@@ -13,6 +13,8 @@ class JenisKamarStoreRequest extends FormRequest
             'harga_permalam'  => 'required|numeric|min:0',
             'deskripsi'       => 'nullable|string',
             'url_gambar'      => 'nullable|string',
+            'fasilitas'       => 'nullable',
+            'fasilitas.*'     => 'integer|exists:fasilitas,id_fasilitas',
         ];
     }
 }

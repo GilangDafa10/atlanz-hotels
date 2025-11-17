@@ -10,7 +10,7 @@ class JenisKamar extends Model
     use HasFactory;
 
     protected $table = 'jenis_kamar';
-    protected $primaryKey = 'id_jenis_kamar'; 
+    protected $primaryKey = 'id_jenis_kamar';
 
     protected $fillable = [
         'jenis_kasur',
@@ -24,8 +24,13 @@ class JenisKamar extends Model
         return $this->hasMany(Kamar::class, 'id_jenis_kamar', 'id_jenis_kamar');
     }
 
-        public function fasilitasJenisKamar()
+    public function fasilitas()
     {
-        return $this->hasMany(FasilitasJenisKamar::class, 'id_jenis_kamar', 'id_jenis_kamar');
+        return $this->belongsToMany(
+            Fasilitas::class,
+            'fasilitas_jenis_kamar',
+            'id_jenis_kamar',
+            'id_fasilitas'
+        )->withTimestamps();
     }
 }
