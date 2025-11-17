@@ -21,4 +21,22 @@ class Kamar extends Model
     {
         return $this->belongsTo(JenisKamar::class, 'id_jenis_kamar');
     }
+
+    public function bookings()
+    {
+        return $this->belongsToMany(Booking::class, 'booking_kamar', 'id_kamar', 'id_booking')
+            ->withPivot('harga_saat_booking')
+            ->withTimestamps();
+    }
+    
+    public function isAvailable($checkin, $checkout)
+    {
+        return !$this->bookings()
+            ->where('status_booking', 'lunas')
+            ->where(function($query) use ($checkin, $checkout) {
+                $query->whereBetween('tgl_checkin', [$checkin, $checkout])
+                      ->orWhereBetween('tgl_checkout', [$checkin, $checkout]);
+            })
+            ->exists();
+    }
 }
