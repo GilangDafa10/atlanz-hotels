@@ -2,15 +2,17 @@
   <div class="confirmation-page">
     <div class="overlay">
       <div class="confirmation-container">
-        <!-- Logo di atas -->
-        <!-- <img src="@/assets/Logo Atlanz 2.png" alt="Atlanz Logo" class="logo" /> -->
 
-        <!-- Centang di tengah -->
         <img src="@/assets/check_circle.png" alt="Success" class="check-icon" />
 
-        <!-- Tulisan -->
         <h1>Account Created Successful</h1>
         <p>Please Check Your Email</p>
+
+        <!-- BUTTON LOGIN -->
+        <button class="login-btn" @click="$router.push('/Rooms')">
+          BOOK NOW
+        </button>
+
       </div>
     </div>
   </div>
@@ -49,7 +51,6 @@ export default {
   align-items: center;
 }
 
-
 .confirmation-container {
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(1px);
@@ -68,21 +69,12 @@ export default {
   justify-content: center;
 }
 
-
-.logo {
-  width: 190px;
-  margin-bottom: 1.8rem;
-  display: block;
-}
-
-
 .check-icon {
   width: 85px;
   height: 85px;
   object-fit: contain;
   margin-bottom: 1.8rem;
 }
-
 
 h1 {
   font-size: 1.9rem;
@@ -91,25 +83,36 @@ h1 {
   font-weight: 600;
 }
 
-
 p {
   font-size: 1rem;
   color: #1f2937;
   opacity: 0.9;
+  margin-bottom: 1.5rem;
 }
 
+/* BUTTON LOGIN STYLE */
+.login-btn {
+  background: #003DFC;
+  color: white;
+  border: none;
+  padding: 12px 32px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.25s ease;
+  width: 200px;
+}
+
+.login-btn:hover {
+  background: #004ccc;
+  transform: translateY(-2px);
+}
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-
 
 @media (max-width: 480px) {
   .confirmation-container {
@@ -117,15 +120,9 @@ p {
     width: 90%;
   }
 
-  .logo {
-    width: 130px;
-    margin-bottom: 1.2rem;
-  }
-
   .check-icon {
     width: 65px;
     height: 65px;
-    margin-bottom: 1.2rem;
   }
 
   h1 {

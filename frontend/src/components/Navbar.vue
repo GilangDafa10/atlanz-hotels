@@ -4,12 +4,12 @@
       <img src="@/assets/Logo Atlanz white.png" alt="Atlanz Logo" />
     </div>
     <ul class="nav-links">
-      <li><a href="#">Home</a></li>
-      <li><a href="#">Facilities</a></li>
-      <li><a href="#">Rooms</a></li>
+      <li><a href="/">Home</a></li>
+      <li><a href="/">Our Services</a></li>
+      <li><a href="/Rooms">Rooms</a></li>
       <li><a href="#">Contact-us</a></li>
-      <li><a href="#">Book</a></li>
-      <li><a href="#">Login</a></li>
+      <li><a href="/">Book</a></li>
+      <li><a href="/Login">Login</a></li>
     </ul>
   </nav>
 </template>

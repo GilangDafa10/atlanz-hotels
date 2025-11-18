@@ -102,7 +102,7 @@ export default {
         localStorage.setItem("token", res.data.data.token);
 
         alert("Login berhasil, Odi! Anda akan diarahkan...");
-        this.$router.push("/dashboard"); // arahkan ke halaman dashboard
+        this.$router.push("/Confirmation"); // arahkan ke halaman dashboard
       } 
       catch (err) {
         this.errorMessage = err.response?.data?.message || "Login gagal!";
