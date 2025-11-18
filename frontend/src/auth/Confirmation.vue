@@ -8,11 +8,6 @@
         <h1>Account Created Successful</h1>
         <p>Please Check Your Email</p>
 
-        <!-- BUTTON LOGIN -->
-        <button class="login-btn" @click="$router.push('/Rooms')">
-          BOOK NOW
-        </button>
-
       </div>
     </div>
   </div>
@@ -21,11 +16,22 @@
 <script>
 export default {
   name: "Confirmation",
+
+  mounted() {
+    // AUTO REDIRECT 3 DETIK
+    setTimeout(() => {
+      this.$router.push("/Rooms");
+    }, 3000);
+  }
 };
 </script>
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+/* style lainnya tetap kamu lanjutin */
+
+
 
 .confirmation-page {
   position: fixed;
