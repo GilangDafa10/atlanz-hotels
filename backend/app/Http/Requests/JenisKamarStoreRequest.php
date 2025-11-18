@@ -6,15 +6,31 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class JenisKamarStoreRequest extends FormRequest
 {
-    public function rules()
+    public function rules(): array
     {
-        return [
-            'jenis_kasur'     => 'required|string|max:255',
-            'harga_permalam'  => 'required|numeric|min:0',
-            'deskripsi'       => 'nullable|string',
-            'url_gambar'      => 'nullable|string',
-            'fasilitas'       => 'nullable',
-            'fasilitas.*'     => 'integer|exists:fasilitas,id_fasilitas',
-        ];
+        $method = $this->method();
+
+        switch ($method) {
+            case 'POST':
+                return [
+                    'jenis_kasur'     => 'required|string|max:255',
+                    'harga_permalam'  => 'required|numeric|min:0',
+                    'deskripsi'       => 'nullable|string',
+                    'url_gambar'      => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
+                    'fasilitas'       => 'nullable',
+                    'fasilitas.*'     => 'integer|exists:fasilitas,id_fasilitas',
+                ];
+            case 'PUT':
+                return [
+                    'jenis_kasur'     => 'required|string|max:255',
+                    'harga_permalam'  => 'required|numeric|min:0',
+                    'deskripsi'       => 'nullable|string',
+                    'url_gambar'      => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
+                    'fasilitas'       => 'nullable',
+                    'fasilitas.*'     => 'integer|exists:fasilitas,id_fasilitas',
+                ];
+            default:
+                return [];
+        }
     }
 }
