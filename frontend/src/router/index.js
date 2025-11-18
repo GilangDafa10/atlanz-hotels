@@ -9,6 +9,7 @@ import Profile from "@/pages/Profil.vue";
 import Reservation from "@/pages/Reservation.vue";
 import Login from "@/pages/Login.vue";
 import Register from "@/pages/Register.vue";
+import Confirmation from "@/pages/Confirmation.vue";
 // import About from "../pages/About.vue";
 // import DetailMobil from "../pages/DetailMobil.vue";
 
@@ -52,6 +53,11 @@ const routes = [
         path: "/Register",
         name: "register",
         component: Register,
+    },
+    {
+        path: "/Confirmation",
+        name: "confirmation",
+        component: Confirmation,
     },
     // {
     //     path: "/about",
