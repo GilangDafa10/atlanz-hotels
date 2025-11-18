@@ -6,8 +6,8 @@
 
         <form @submit.prevent="login">
           <div class="form-group">
-            <label>Username</label>
-            <input type="text" v-model="username" placeholder="Username" required />
+            <label>Username / Email</label>
+            <input type="text" v-model="username" placeholder="Username / Email" required />
           </div>
 
           <div class="form-group">
@@ -32,18 +32,8 @@
                   stroke="currentColor"
                   class="eye-icon"
                 >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="1.8"
-                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="1.8"
-                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                  />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                 </svg>
 
                 <svg
@@ -54,19 +44,20 @@
                   stroke="currentColor"
                   class="eye-icon"
                 >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="1.8"
-                    d="M3 3l18 18M10.58 10.58A3 3 0 0113.42 13.42M6.26 6.26A9.77 9.77 0 003 12c1.274 4.057 5.064 7 9.542 7a9.77 9.77 0 005.18-1.54M17.74 17.74A9.77 9.77 0 0021 12c-1.274-4.057-5.064-7-9.542-7a9.77 9.77 0 00-5.18 1.54"
-                  />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 3l18 18M10.58 10.58A3 3 0 0113.42 13.42M6.26 6.26A9.77 9.77 0 003 12c1.274 4.057 5.064 7 9.542 7a9.77 9.77 0 005.18-1.54M17.74 17.74A9.77 9.77 0 0021 12c-1.274-4.057-5.064-7-9.542-7a9.77 9.77 0 00-5.18 1.54" />
                 </svg>
               </button>
             </div>
           </div>
 
-          <button type="submit" class="btn">Login</button>
+          <button type="submit" class="btn" :disabled="loading">
+            {{ loading ? 'Loading...' : 'Login' }}
+          </button>
         </form>
+
+        <p v-if="errorMessage" style="color:red; margin-top:10px;">
+          {{ errorMessage }}
+        </p>
 
         <p class="footer">
           No Account? <a href="#">Create Account</a>
@@ -77,6 +68,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "Login",
   data() {
@@ -84,22 +77,43 @@ export default {
       username: "",
       password: "",
       showPassword: false,
+      loading: false,
+      errorMessage: null,
     };
   },
   methods: {
     togglePassword() {
       this.showPassword = !this.showPassword;
     },
-    login() {
-      if (this.username && this.password) {
-        alert(`Selamat datang, ${this.username}!`);
-      } else {
-        alert("Isi username dan password dulu ya, Odi");
+
+    async login() {
+      this.loading = true;
+      this.errorMessage = null;
+
+      try {
+        const payload = {
+          email: this.username, // API pakai email
+          password: this.password,
+        };
+
+        const res = await axios.post("http://127.0.0.1:8000/api/login", payload);
+
+        // Simpan token
+        localStorage.setItem("token", res.data.data.token);
+        this.$router.push("/Confirmation");
+        
+      } 
+      catch (err) {
+        this.errorMessage = err.response?.data?.message || "Login gagal!";
+      } 
+      finally {
+        this.loading = false;
       }
     },
   },
 };
 </script>
+
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');

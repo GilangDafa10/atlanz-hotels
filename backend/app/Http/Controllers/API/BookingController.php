@@ -44,8 +44,50 @@ class BookingController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'Daftar booking berhasil diambil',
-                'data' => $bookings
+                'data' => [
+                    'bookings' => $bookings->map(function ($b) {
+                        return [
+                            'id_booking' => $b->id_booking,
+                            'id_user' => $b->id_user,
+                            'total_malam' => $b->total_malam,
+                            'total_harga' => $b->total_harga,
+                            'status_booking' => $b->status_booking,
+                            'tgl_checkin' => $b->tgl_checkin,
+                            'tgl_checkout' => $b->tgl_checkout,
+                            'tgl_booking' => $b->tgl_booking,
+
+                            'kamars' => $b->kamars->map(function ($k) {
+                                return [
+                                    'id_kamar' => $k->id_kamar,
+                                    'nomor_kamar' => $k->nomor_kamar,
+                                    'jenis_kamar' => [
+                                        'jenis_kasur' => $k->jenisKamar->jenis_kasur,
+                                        'harga_permalam' => $k->jenisKamar->harga_permalam,
+                                        'deskripsi' => $k->jenisKamar->deskripsi,
+                                        'url_gambar' => $k->jenisKamar->url_gambar,
+                                    ],
+                                ];
+                            }),
+
+                            'additional_services' => $b->additionalServices->map(function ($s) {
+                                return [
+                                    'id' => $s->id_service,
+                                    'nama' => $s->nama_service,
+                                    'harga' => $s->harga_service,
+                                ];
+                            }),
+
+                            'pembayaran' => $b->pembayaran ? [
+                                'status_pembayaran' => $b->pembayaran->status_pembayaran,
+                                'metode' => $b->pembayaran->metode,
+                                'tanggal_bayar' => $b->pembayaran->tanggal_bayar,
+                                'id_transaksi' => $b->pembayaran->id_transaksi
+                            ] : null,
+                        ];
+                    })
+                ]
             ], 200);
+
         } catch (Exception $e) {
             Log::error('Booking Index Error: ' . $e->getMessage());
             return response()->json([
@@ -68,8 +110,8 @@ class BookingController extends Controller
         DB::beginTransaction();
         try {
             $user = auth()->user();
-            
-            // Hanya user biasa yang bisa booking (role=2)
+
+            // hanya user biasa yang bisa booking
             if ($user->id_role != 2) {
                 return response()->json([
                     'status' => false,
@@ -77,19 +119,19 @@ class BookingController extends Controller
                 ], 403);
             }
 
-            // Validasi input
+            // Validasi input (B: jenis_kamar + jumlah)
             $validator = Validator::make($request->all(), [
                 'tgl_checkin' => 'required|date|after:today',
                 'tgl_checkout' => 'required|date|after:tgl_checkin',
-                'kamar_ids' => 'required|array|min:1',
-                'kamar_ids.*' => 'exists:kamar,id_kamar',
+                'jenis_kamar_id' => 'required|exists:jenis_kamar,id_jenis_kamar',
+                'jumlah' => 'required|integer|min:1',
                 'service_ids' => 'nullable|array',
-                'service_ids.*' => 'exists:additional_services,id_service'
+                'service_ids.*' => 'exists:additional_service,id_service'
             ], [
                 'tgl_checkin.after' => 'Tanggal checkin harus setelah hari ini',
                 'tgl_checkout.after' => 'Tanggal checkout harus setelah tanggal checkin',
-                'kamar_ids.required' => 'Minimal pilih 1 kamar',
-                'kamar_ids.*.exists' => 'Kamar yang dipilih tidak valid'
+                'jenis_kamar_id.required' => 'Pilih jenis kamar',
+                'jumlah.required' => 'Masukkan jumlah kamar yang ingin dipesan'
             ]);
 
             if ($validator->fails()) {
@@ -102,50 +144,53 @@ class BookingController extends Controller
 
             $validated = $validator->validated();
 
-            // Hitung total malam
             $checkin = Carbon::parse($validated['tgl_checkin']);
             $checkout = Carbon::parse($validated['tgl_checkout']);
             $totalMalam = $checkin->diffInDays($checkout);
-
-            // Cek ketersediaan semua kamar
-            $kamarTidakTersedia = [];
-            $hargaTotalKamar = 0;
-            $kamarDetails = [];
-            $dataKamar = [];
-
-            foreach ($validated['kamar_ids'] as $id_kamar) {
-                $kamar = Kamar::with('jenisKamar')->findOrFail($id_kamar);
-                
-                // Cek ketersediaan kamar
-                if (!$kamar->isAvailable($checkin, $checkout)) {
-                    $kamarTidakTersedia[] = $kamar->nomor_kamar;
-                    continue;
-                }
-                
-                $hargaSaatIni = $kamar->jenisKamar->harga_permalam;
-                $hargaTotalKamar += $hargaSaatIni;
-                
-                // Siapkan data untuk pivot table
-                $dataKamar[$id_kamar] = ['harga_saat_booking' => $hargaSaatIni];
-                
-                $kamarDetails[] = [
-                    'id' => $kamar->id_kamar,
-                    'nomor' => $kamar->nomor_kamar,
-                    'harga_permalam' => $hargaSaatIni,
-                    'jenis' => $kamar->jenisKamar->jenis_kasur
-                ];
-            }
-
-            if (!empty($kamarTidakTersedia)) {
-                $pesan = "Kamar berikut tidak tersedia untuk tanggal yang dipilih: " . implode(', ', $kamarTidakTersedia);
+            if ($totalMalam <= 0) {
                 return response()->json([
                     'status' => false,
-                    'message' => $pesan,
-                    'kamar_tidak_tersedia' => $kamarTidakTersedia
+                    'message' => 'Rentang tanggal harus valid (minimal 1 malam)'
+                ], 422);
+            }
+
+            $jenisKamarId = $validated['jenis_kamar_id'];
+            $jumlah = (int) $validated['jumlah'];
+
+            // Ambil semua kamar dari jenis yang diminta
+            $allKamar = Kamar::with('jenisKamar')
+                ->where('id_jenis_kamar', $jenisKamarId)
+                ->get();
+
+            if ($allKamar->isEmpty()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Jenis kamar tidak ditemukan'
+                ], 404);
+            }
+
+            // Filter kamar yang available
+            $available = $allKamar->filter(function ($kamar) use ($checkin, $checkout) {
+                return $kamar->isAvailable($checkin, $checkout);
+            })->values();
+
+            if ($available->count() < $jumlah) {
+                return response()->json([
+                    'status' => false,
+                    'message' => "Kamar tidak tersedia untuk tanggal yang dipilih. Tersedia: {$available->count()} kamar dari {$jumlah} yang diminta.",
+                    'available_count' => $available->count()
                 ], 400);
             }
 
-            // Hitung harga additional services
+            // Ambil kamar yang akan di-book (ambil $jumlah pertama)
+            $selectedKamar = $available->slice(0, $jumlah);
+
+            // Hitung harga kamar (per malam) - gunakan harga jenis kamar
+            // Asumsi: semua selected kamar dari 1 jenis sehingga harga sama
+            $hargaPerMalam = (int) $selectedKamar->first()->jenisKamar->harga_permalam;
+            $hargaTotalKamar = $hargaPerMalam * $jumlah * $totalMalam;
+
+            // Hitung harga services (jika ada)
             $hargaTotalServices = 0;
             $serviceDetails = [];
             $dataServices = [];
@@ -155,7 +200,6 @@ class BookingController extends Controller
                     $service = AdditionalService::findOrFail($id_service);
                     $hargaTotalServices += $service->harga_service;
                     $dataServices[$id_service] = ['harga_saat_booking' => $service->harga_service];
-                    
                     $serviceDetails[] = [
                         'id' => $service->id_service,
                         'nama' => $service->nama_service,
@@ -164,8 +208,7 @@ class BookingController extends Controller
                 }
             }
 
-            // Hitung total harga
-            $totalHarga = ($hargaTotalKamar * $totalMalam) + $hargaTotalServices;
+            $totalHarga = $hargaTotalKamar + $hargaTotalServices;
 
             // Buat booking utama
             $booking = Booking::create([
@@ -175,34 +218,59 @@ class BookingController extends Controller
                 'tgl_checkin' => $checkin,
                 'tgl_checkout' => $checkout,
                 'tgl_booking' => now(),
-                'id_user' => $user->id
+                'id_user' => $user->id_user ?? $user->id // menyesuaikan pk user
             ]);
 
-            // Attach kamar ke booking
-            $booking->kamars()->attach($dataKamar);
+            // Attach kamar ke booking (dengan harga_saat_booking per kamar)
+            $dataKamarAttach = [];
+            foreach ($selectedKamar as $kamar) {
+                $dataKamarAttach[$kamar->id_kamar] = [
+                    'harga_saat_booking' => $kamar->jenisKamar->harga_permalam
+                ];
+            }
+            $booking->kamars()->attach($dataKamarAttach);
 
-            // Attach additional services ke booking
+            // Attach services
             if (!empty($dataServices)) {
                 $booking->additionalServices()->attach($dataServices);
             }
 
             DB::commit();
 
-            // Load relasi untuk response
-            $booking->load([
-                'kamars.jenisKamar',
-                'additionalServices',
-                'pembayaran'
-            ]);
+            // Prepare response sesuai format yang diminta
+            $kamarsResp = [];
+            foreach ($selectedKamar as $k) {
+                $kamarsResp[] = [
+                    'id_kamar' => $k->id_kamar,
+                    'nomor_kamar' => $k->nomor_kamar,
+                    'jenis_kamar' => [
+                        'jenis_kasur' => $k->jenisKamar->jenis_kasur,
+                        'harga_permalam' => $k->jenisKamar->harga_permalam,
+                        'deskripsi' => $k->jenisKamar->deskripsi,
+                        'url_gambar' => $k->jenisKamar->url_gambar,
+                    ],
+                ];
+            }
+
+            $responseBooking = [
+                'total_malam' => $booking->total_malam,
+                'total_harga' => $booking->total_harga,
+                'status_booking' => $booking->status_booking,
+                'tgl_checkin' => $booking->tgl_checkin,
+                'tgl_checkout' => $booking->tgl_checkout,
+                'tgl_booking' => $booking->tgl_booking,
+                'id_user' => $booking->id_user,
+                'id_booking' => $booking->id_booking,
+                'kamars' => $kamarsResp,
+                'additional_services' => $serviceDetails,
+                'pembayaran' => null
+            ];
 
             return response()->json([
                 'status' => true,
                 'message' => 'Booking berhasil dibuat',
                 'data' => [
-                    'booking' => $booking,
-                    'kamar_details' => $kamarDetails,
-                    'service_details' => $serviceDetails,
-                    'next_step' => 'Silakan lanjutkan ke pembayaran dengan QRIS'
+                    'booking' => $responseBooking
                 ]
             ], 201);
 
@@ -216,6 +284,7 @@ class BookingController extends Controller
             ], 500);
         }
     }
+
 
     /**
      * GET - Detail booking berdasarkan ID
@@ -247,8 +316,55 @@ class BookingController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'Detail booking berhasil diambil',
-                'data' => $booking
+                'data' => [
+                    'booking' => [
+                        'id_booking' => $booking->id_booking,
+                        'id_user' => $booking->id_user,
+                        'total_malam' => $booking->total_malam,
+                        'total_harga' => $booking->total_harga,
+                        'status_booking' => $booking->status_booking,
+                        'tgl_checkin' => $booking->tgl_checkin,
+                        'tgl_checkout' => $booking->tgl_checkout,
+                        'tgl_booking' => $booking->tgl_booking,
+
+                        'kamars' => $booking->kamars->map(function ($k) {
+                            return [
+                                'id_kamar' => $k->id_kamar,
+                                'nomor_kamar' => $k->nomor_kamar,
+                                'jenis_kamar' => [
+                                    'jenis_kasur' => $k->jenisKamar->jenis_kasur,
+                                    'harga_permalam' => $k->jenisKamar->harga_permalam,
+                                    'deskripsi' => $k->jenisKamar->deskripsi,
+                                    'url_gambar' => $k->jenisKamar->url_gambar,
+                                ],
+                                'fasilitas' => $k->jenisKamar->fasilitas->map(function ($f) {
+                                    return [
+                                        'id_fasilitas' => $f->id_fasilitas,
+                                        'nama_fasilitas' => $f->nama_fasilitas,
+                                        'icon_fasilitas' => $f->icon_fasilitas
+                                    ];
+                                })
+                            ];
+                        }),
+
+                        'additional_services' => $booking->additionalServices->map(function ($s) {
+                            return [
+                                'id' => $s->id_service,
+                                'nama' => $s->nama_service,
+                                'harga' => $s->harga_service
+                            ];
+                        }),
+
+                        'pembayaran' => $booking->pembayaran ? [
+                            'status_pembayaran' => $booking->pembayaran->status_pembayaran,
+                            'metode' => $booking->pembayaran->metode,
+                            'tanggal_bayar' => $booking->pembayaran->tanggal_bayar,
+                            'id_transaksi' => $booking->pembayaran->id_transaksi
+                        ] : null
+                    ]
+                ]
             ], 200);
+
         } catch (Exception $e) {
             if ($e instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
                 return response()->json([

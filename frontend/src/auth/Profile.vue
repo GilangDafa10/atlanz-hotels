@@ -1,0 +1,149 @@
+<template>
+  <div class="min-h-screen" style="background-color: #0E2858;">
+    <div class="flex gap-8 px-20 pt-16 pb-12">
+      <!-- Sidebar -->
+      <div class="w-80 bg-white rounded-lg shadow-lg p-6 h-fit">
+        <div class="text-gray-500 text-xs font-semibold mb-4 tracking-wide">
+          YOUR PERSONAL AREA
+        </div>
+        
+        <div class="flex items-center gap-3 mb-4 pb-4 border-b">
+          <img 
+            :src="profileImage" 
+            alt="Profile" 
+            class="w-10 h-10 rounded-full object-cover"
+          />
+          <span class="font-semibold text-gray-800">Maskur</span>
+        </div>
+
+        <div class="space-y-3">
+          <div class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded cursor-pointer transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+            <span class="text-sm">My Reservation</span>
+          </div>
+
+          <div class="flex items-center gap-3 px-4 py-3 bg-blue-500 text-white rounded cursor-pointer transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+            </svg>
+            <span class="text-sm font-semibold">My Profile</span>
+          </div>
+
+         <div class="border-t pt-3 mt-3">
+            <div class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded cursor-pointer transition">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+              </svg>
+              <span class="text-sm">New Reservation</span>
+            </div>
+
+            <div class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded cursor-pointer transition">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+              </svg>
+              <span class="text-sm">Log Out</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Section -->
+      <div class="flex-1 bg-white rounded-lg shadow-lg p-8">
+        <div class="mb-8">
+          <h1 class="text-2xl font-bold text-gray-800 mb-2">My Profile</h1>
+          <div class="flex items-center gap-3">
+            <img 
+              :src="profileImage" 
+              alt="Profile" 
+              class="w-8 h-8 rounded-full object-cover"
+            />
+            <span class="text-gray-600 text-sm">@mskr19</span>
+          </div>
+        </div>
+
+        <!-- User Section -->
+        <div class="mb-8">
+          <h2 class="text-gray-600 text-sm font-semibold mb-4 tracking-wide">User</h2>
+          
+          <div class="space-y-4">
+            
+
+            <div class="flex items-center gap-4">
+              <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+              </svg>
+              <div class="flex-1">
+                <label class="text-gray-500 text-xs block mb-1">Name</label>
+                <div class="flex justify-between items-center">
+                  <span class="text-gray-800 font-medium">Maskurrrrr</span>
+                </div>
+                <div class="border-b border-gray-300 mt-2"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contacts Section -->
+        <div>
+          <h2 class="text-gray-600 text-sm font-semibold mb-4 tracking-wide">Contacts</h2>
+          
+          <div class="space-y-4">
+            <div class="flex items-center gap-4">
+              <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+              </svg>
+              <div class="flex-1">
+                <label class="text-gray-500 text-xs block mb-1">Email</label>
+                <div class="flex justify-between items-center">
+                  <span class="text-gray-800 font-medium">maskurgeming@gmail.com</span>
+                </div>
+                <div class="border-b border-gray-300 mt-2"></div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+              <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+              </svg>
+              <div class="flex-1">
+                <label class="text-gray-500 text-xs block mb-1">Mobile or Cell Phone</label>
+                <div class="flex justify-between items-center">
+                  <span class="text-gray-800 font-medium">081234567899</span>
+                </div>
+                <div class="border-b border-gray-300 mt-2"></div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+              
+              <div class="flex-1">
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import propilImage from '@/assets/Profile.png'
+
+export default {
+  name: 'ProfileContent',
+  data() {
+    return {
+      profileImage: propilImage
+    }
+  }
+}
+</script>
+
+<style scoped>
+* {
+  font-family: 'Poppins', sans-serif;
+}
+</style>
