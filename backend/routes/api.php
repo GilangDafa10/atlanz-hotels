@@ -90,6 +90,5 @@ Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function ()
 
         // Dashboard
         Route::get('/dashboard', [DashboardController::class, 'index']);
-
     });
 });

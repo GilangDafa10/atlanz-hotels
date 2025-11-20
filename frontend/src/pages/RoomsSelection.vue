@@ -1,10 +1,10 @@
 <template>
   <MainLayouts>
-    <Confirmation />
+    <BookingSelection />
   </MainLayouts>
 </template>
 
 <script setup>
 import MainLayouts from '@/layouts/MainLayouts.vue'
-import Confirmation from '@/auth/Confirmation.vue'
+import BookingSelection from '@/auth/BookingSelection.vue'
 </script>

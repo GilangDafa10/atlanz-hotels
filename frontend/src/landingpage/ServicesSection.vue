@@ -1,5 +1,5 @@
 <template>
-  <section class="w-full py-20 bg-white">
+  <section id="services" class="w-full py-20 bg-white">
     <!-- Title -->
     <div class="text-center max-w-2xl mx-auto mb-16 px-6">
       <h2 class="text-3xl md:text-4xl font-bold text-[#123466] tracking-wide">OUR SERVICES</h2>
@@ -42,7 +42,7 @@
 
       <!-- Image -->
       <img
-        src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e"
+        src="@/assets/Snorkling.png"
         alt="Snorkling"
         class="rounded-2xl shadow-md w-full h-[300px] object-cover"
       />
@@ -51,7 +51,7 @@
     <!-- 3. SPA -->
     <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center px-6">
       <img
-        src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca"
+        src="@/assets/Spa.png"
         alt="Spa"
         class="rounded-2xl shadow-md w-full h-[300px] object-cover"
       />

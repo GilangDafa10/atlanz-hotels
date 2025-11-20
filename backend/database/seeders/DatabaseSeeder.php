@@ -20,8 +20,8 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         DB::table('roles')->insert([
-            [ 'id_role' => 1, 'nama_role' => 'admin' ],
-            [ 'id_role' => 2, 'nama_role' => 'user' ],
+            ['id_role' => 1, 'nama_role' => 'admin'],
+            ['id_role' => 2, 'nama_role' => 'user'],
         ]);
 
         // =========================
@@ -70,9 +70,9 @@ class DatabaseSeeder extends Seeder
         // KAMAR
         // =========================
         DB::table('kamar')->insert([
-            [ 'id_kamar' => 1, 'nomor_kamar' => '101', 'id_jenis_kamar' => 1 ],
-            [ 'id_kamar' => 2, 'nomor_kamar' => '102', 'id_jenis_kamar' => 1 ],
-            [ 'id_kamar' => 3, 'nomor_kamar' => '103', 'id_jenis_kamar' => 2 ],
+            ['id_kamar' => 1, 'nomor_kamar' => '101', 'id_jenis_kamar' => 1],
+            ['id_kamar' => 2, 'nomor_kamar' => '102', 'id_jenis_kamar' => 1],
+            ['id_kamar' => 3, 'nomor_kamar' => '103', 'id_jenis_kamar' => 2],
         ]);
 
         // =========================
@@ -101,12 +101,12 @@ class DatabaseSeeder extends Seeder
         // FASILITAS - JENIS KAMAR
         // =========================
         DB::table('fasilitas_jenis_kamar')->insert([
-            [ 'id_jenis_kamar' => 1, 'id_fasilitas' => 1 ],
-            [ 'id_jenis_kamar' => 1, 'id_fasilitas' => 2 ],
-            [ 'id_jenis_kamar' => 1, 'id_fasilitas' => 3 ],
+            ['id_jenis_kamar' => 1, 'id_fasilitas' => 1],
+            ['id_jenis_kamar' => 1, 'id_fasilitas' => 2],
+            ['id_jenis_kamar' => 1, 'id_fasilitas' => 3],
 
-            [ 'id_jenis_kamar' => 2, 'id_fasilitas' => 1 ],
-            [ 'id_jenis_kamar' => 2, 'id_fasilitas' => 2 ],
+            ['id_jenis_kamar' => 2, 'id_fasilitas' => 1],
+            ['id_jenis_kamar' => 2, 'id_fasilitas' => 2],
         ]);
 
         // =========================

@@ -25,7 +25,7 @@ class BookingController extends Controller
     {
         try {
             $user = auth()->user();
-            
+
             $query = Booking::with([
                 'user:id,name,email',
                 'kamars:id_kamar,nomor_kamar,id_jenis_kamar',
@@ -87,7 +87,6 @@ class BookingController extends Controller
                     })
                 ]
             ], 200);
-
         } catch (Exception $e) {
             Log::error('Booking Index Error: ' . $e->getMessage());
             return response()->json([
@@ -126,7 +125,7 @@ class BookingController extends Controller
                 'jenis_kamar_id' => 'required|exists:jenis_kamar,id_jenis_kamar',
                 'jumlah' => 'required|integer|min:1',
                 'service_ids' => 'nullable|array',
-                'service_ids.*' => 'exists:additional_service,id_service'
+                'service_ids.*' => 'exists:additional_services,id_service'
             ], [
                 'tgl_checkin.after' => 'Tanggal checkin harus setelah hari ini',
                 'tgl_checkout.after' => 'Tanggal checkout harus setelah tanggal checkin',
@@ -273,7 +272,6 @@ class BookingController extends Controller
                     'booking' => $responseBooking
                 ]
             ], 201);
-
         } catch (Exception $e) {
             DB::rollBack();
             Log::error('Booking Store Error: ' . $e->getMessage());
@@ -296,7 +294,7 @@ class BookingController extends Controller
     {
         try {
             $user = auth()->user();
-            
+
             $query = Booking::with([
                 'user:id,name,email,no_hp',
                 'kamars:id_kamar,nomor_kamar,id_jenis_kamar',
@@ -364,7 +362,6 @@ class BookingController extends Controller
                     ]
                 ]
             ], 200);
-
         } catch (Exception $e) {
             if ($e instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
                 return response()->json([
@@ -372,7 +369,7 @@ class BookingController extends Controller
                     'message' => 'Booking tidak ditemukan atau bukan milik Anda'
                 ], 404);
             }
-            
+
             Log::error('Booking Show Error: ' . $e->getMessage());
             return response()->json([
                 'status' => false,
@@ -396,16 +393,16 @@ class BookingController extends Controller
         DB::beginTransaction();
         try {
             $user = auth()->user();
-            
+
             // Cari booking dengan filter role
             $query = Booking::where('id_booking', $id_booking);
-            
+
             if ($user->id_role != 1) { // Bukan admin
                 $query->where('id_user', $user->id);
             }
 
             $booking = $query->firstOrFail();
-            
+
             // Hanya bisa update jika status masih pending
             if ($booking->status_booking !== 'pending') {
                 return response()->json([
@@ -421,11 +418,11 @@ class BookingController extends Controller
                 'tgl_checkin' => 'nullable|date|after:today',
                 'tgl_checkout' => 'nullable|date|after:tgl_checkin'
             ];
-            
+
             // Jika update tanggal, tambahkan validasi
             $tglCheckinBaru = $request->tgl_checkin ?? $booking->tgl_checkin;
             $tglCheckoutBaru = $request->tgl_checkout ?? $booking->tgl_checkout;
-            
+
             if ($request->tgl_checkin || $request->tgl_checkout) {
                 $validator = Validator::make($request->all(), [
                     'tgl_checkin' => 'required|date|after:today',
@@ -450,11 +447,11 @@ class BookingController extends Controller
             if (isset($validated['service_ids'])) {
                 // Detach semua services lama
                 $booking->additionalServices()->detach();
-                
+
                 // Attach services baru
                 $dataServices = [];
                 $hargaTotalServices = 0;
-                
+
                 if (!empty($validated['service_ids'])) {
                     foreach ($validated['service_ids'] as $id_service) {
                         $service = AdditionalService::findOrFail($id_service);
@@ -462,7 +459,7 @@ class BookingController extends Controller
                         $dataServices[$id_service] = ['harga_saat_booking' => $service->harga_service];
                     }
                 }
-                
+
                 if (!empty($dataServices)) {
                     $booking->additionalServices()->attach($dataServices);
                 }
@@ -474,11 +471,11 @@ class BookingController extends Controller
             $checkoutLama = Carbon::parse($booking->tgl_checkout);
             $checkinBaru = Carbon::parse($tglCheckinBaru);
             $checkoutBaru = Carbon::parse($tglCheckoutBaru);
-            
+
             if ($checkinBaru != $checkinLama || $checkoutBaru != $checkoutLama) {
                 $updateTanggal = true;
                 $totalMalamBaru = $checkinBaru->diffInDays($checkoutBaru);
-                
+
                 // Cek ulang ketersediaan kamar
                 $kamarTidakTersedia = [];
                 foreach ($booking->kamars as $kamar) {
@@ -486,7 +483,7 @@ class BookingController extends Controller
                         $kamarTidakTersedia[] = $kamar->nomor_kamar;
                     }
                 }
-                
+
                 if (!empty($kamarTidakTersedia)) {
                     return response()->json([
                         'status' => false,
@@ -494,7 +491,7 @@ class BookingController extends Controller
                         'kamar_tidak_tersedia' => $kamarTidakTersedia
                     ], 400);
                 }
-                
+
                 // Update tanggal dan total malam
                 $booking->update([
                     'tgl_checkin' => $checkinBaru,
@@ -508,7 +505,7 @@ class BookingController extends Controller
                 $hargaKamar = $booking->kamars->sum('pivot.harga_saat_booking') * $booking->total_malam;
                 $hargaServices = $booking->additionalServices->sum('pivot.harga_saat_booking');
                 $totalHargaBaru = $hargaKamar + $hargaServices;
-                
+
                 $booking->update(['total_harga' => $totalHargaBaru]);
             }
 
@@ -526,7 +523,6 @@ class BookingController extends Controller
                 'message' => 'Booking berhasil diperbarui',
                 'data' => $booking
             ], 200);
-
         } catch (Exception $e) {
             DB::rollBack();
             Log::error('Booking Update Error: ' . $e->getMessage());
@@ -549,16 +545,16 @@ class BookingController extends Controller
         DB::beginTransaction();
         try {
             $user = auth()->user();
-            
+
             // Cari booking dengan filter role
             $query = Booking::where('id_booking', $id_booking);
-            
+
             if ($user->id_role != 1) { // Bukan admin
                 $query->where('id_user', $user->id);
             }
 
             $booking = $query->firstOrFail();
-            
+
             // Hanya bisa batalkan jika status masih pending
             if ($booking->status_booking !== 'pending') {
                 return response()->json([
@@ -591,7 +587,6 @@ class BookingController extends Controller
                 'message' => 'Booking berhasil dibatalkan',
                 'data' => null
             ], 200);
-
         } catch (Exception $e) {
             DB::rollBack();
             if ($e instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
@@ -600,7 +595,7 @@ class BookingController extends Controller
                     'message' => 'Booking tidak ditemukan atau tidak bisa dibatalkan'
                 ], 404);
             }
-            
+
             Log::error('Booking Cancel Error: ' . $e->getMessage());
             return response()->json([
                 'status' => false,

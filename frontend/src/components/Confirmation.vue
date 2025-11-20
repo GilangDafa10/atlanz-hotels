@@ -2,12 +2,10 @@
   <div class="confirmation-page">
     <div class="overlay">
       <div class="confirmation-container">
-
         <img src="@/assets/check_circle.png" alt="Success" class="check-icon" />
 
         <h1>Account Created Successful</h1>
         <p>Please Check Your Email</p>
-
       </div>
     </div>
   </div>
@@ -15,15 +13,15 @@
 
 <script>
 export default {
-  name: "Confirmation",
+  name: 'Confirmation',
 
   mounted() {
     // AUTO REDIRECT 3 DETIK
     setTimeout(() => {
-      this.$router.push("/Rooms");
-    }, 3000);
-  }
-};
+      this.$router.push('/')
+    }, 3000)
+  },
+}
 </script>
 
 <style scoped>
@@ -31,14 +29,12 @@ export default {
 
 /* style lainnya tetap kamu lanjutin */
 
-
-
 .confirmation-page {
   position: fixed;
   inset: 0;
   width: 100%;
   height: 100vh;
-  background: url("@/assets/gambar hotel.jpg") no-repeat center center/cover;
+  background: url('@/assets/gambar hotel.jpg') no-repeat center center/cover;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -51,7 +47,7 @@ export default {
   left: 0;
   height: 100%;
   width: 100%;
-  background: rgba(0, 0, 0, 0.50);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -98,7 +94,7 @@ p {
 
 /* BUTTON LOGIN STYLE */
 .login-btn {
-  background: #003DFC;
+  background: #003dfc;
   color: white;
   border: none;
   padding: 12px 32px;
@@ -116,8 +112,14 @@ p {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 480px) {

@@ -1,277 +1,158 @@
 <template>
-  <div class="login-page">
-    <div class="overlay">
-      <div class="login-container">
-        <h2 class="title">Sign in to Atlanz</h2>
+  <div
+    class="fixed inset-0 bg-cover bg-center"
+    style="background-image: url('/src/assets/gambar hotel.jpg')"
+  >
+    <!-- Overlay -->
+    <div class="absolute inset-0 bg-black/50 flex items-center justify-center">
+      <!-- Login Card -->
+      <div class="backdrop-blur-md bg-white/50 shadow-xl p-8 rounded-2xl w-80 md:w-96 text-center">
+        <h2 class="text-3xl font-semibold text-black mb-6">Sign in to ATLANZ</h2>
 
-        <form @submit.prevent="login">
-          <div class="form-group">
-            <label>Username / Email</label>
-            <input type="text" v-model="username" placeholder="Username / Email" required />
+        <!-- Form -->
+        <form @submit.prevent="login" class="space-y-4">
+          <!-- Username -->
+          <div class="text-left">
+            <label class="text-sm font-medium text-black mb-1 block"> Username / Email </label>
+            <input
+              v-model="username"
+              type="text"
+              required
+              class="w-full px-4 py-2 rounded-lg bg-white/90 focus:bg-white border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none"
+              placeholder="Username / Email"
+            />
           </div>
 
-          <div class="form-group">
-            <label>Password</label>
-            <div class="password-input-wrapper">
-              <input 
-                :type="showPassword ? 'text' : 'password'" 
-                v-model="password" 
-                placeholder="6+ characters" 
-                required 
+          <!-- Password -->
+          <div class="text-left">
+            <label class="text-sm font-medium text-black mb-1 block"> Password </label>
+
+            <div class="relative flex items-center">
+              <input
+                :type="showPassword ? 'text' : 'password'"
+                v-model="password"
+                required
+                placeholder="6+ characters"
+                class="w-full px-4 py-2 pr-12 rounded-lg bg-white/90 focus:bg-white border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none"
               />
-              <button 
-                type="button" 
-                class="toggle-password" 
+
+              <button
+                type="button"
                 @click="togglePassword"
+                class="absolute right-3 text-gray-600 hover:text-black transition"
               >
                 <svg
                   v-if="showPassword"
                   xmlns="http://www.w3.org/2000/svg"
+                  class="w-6 h-6"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
-                  class="eye-icon"
                 >
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.8"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.8"
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                  />
                 </svg>
 
                 <svg
                   v-else
                   xmlns="http://www.w3.org/2000/svg"
+                  class="w-6 h-6"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
-                  class="eye-icon"
                 >
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 3l18 18M10.58 10.58A3 3 0 0113.42 13.42M6.26 6.26A9.77 9.77 0 003 12c1.274 4.057 5.064 7 9.542 7a9.77 9.77 0 005.18-1.54M17.74 17.74A9.77 9.77 0 0021 12c-1.274-4.057-5.064-7-9.542-7a9.77 9.77 0 00-5.18 1.54" />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.8"
+                    d="M3 3l18 18M10.58 10.58A3 3 0 0113.42 13.42M6.26 6.26A9.77 9.77 0 003 12c1.274 4.057 5.064 7 9.542 7a9.77 9.77 0 005.18-1.54M17.74 17.74A9.77 9.77 0 0021 12c-1.274-4.057-5.064-7-9.542-7a9.77 9.77 0 00-5.18 1.54"
+                  />
                 </svg>
               </button>
             </div>
           </div>
 
-          <button type="submit" class="btn" :disabled="loading">
+          <!-- Button -->
+          <button
+            :disabled="loading"
+            class="w-full mt-1 bg-blue-600 text-white py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 active:scale-95 transition"
+          >
             {{ loading ? 'Loading...' : 'Login' }}
           </button>
         </form>
 
-        <p v-if="errorMessage" style="color:red; margin-top:10px;">
+        <p v-if="errorMessage" class="text-red-600 text-sm mt-3">
           {{ errorMessage }}
         </p>
 
-        <p class="footer">
-          No Account? <a href="#">Create Account</a>
+        <p class="mt-4 text-gray-700 text-sm">
+          No Account?
+          <a href="/register" class="text-blue-600 font-medium hover:underline"> Create Account </a>
         </p>
       </div>
     </div>
   </div>
+
+  <!-- SUKSES LOGIN MODAL -->
+  <SuccessLoginModal v-model="showSuccessModal" />
 </template>
 
-<script>
-import axios from "axios";
+<script setup>
+import { ref } from 'vue'
+import axios from 'axios'
+import { useRouter } from 'vue-router'
+import SuccessLoginModal from '@/components/SuccessLoginModal.vue'
 
-export default {
-  name: "Login",
-  data() {
-    return {
-      username: "",
-      password: "",
-      showPassword: false,
-      loading: false,
-      errorMessage: null,
-    };
-  },
-  methods: {
-    togglePassword() {
-      this.showPassword = !this.showPassword;
-    },
+const router = useRouter()
 
-    async login() {
-      this.loading = true;
-      this.errorMessage = null;
+const username = ref('')
+const password = ref('')
+const showPassword = ref(false)
+const loading = ref(false)
+const errorMessage = ref(null)
 
-      try {
-        const payload = {
-          email: this.username, // API pakai email
-          password: this.password,
-        };
+const showSuccessModal = ref(false)
 
-        const res = await axios.post("http://127.0.0.1:8000/api/login", payload);
+const togglePassword = () => {
+  showPassword.value = !showPassword.value
+}
 
-        // Simpan token
-        localStorage.setItem("token", res.data.data.token);
-        this.$router.push("/Confirmation");
-        
-      } 
-      catch (err) {
-        this.errorMessage = err.response?.data?.message || "Login gagal!";
-      } 
-      finally {
-        this.loading = false;
-      }
-    },
-  },
-};
+const login = async () => {
+  loading.value = true
+  errorMessage.value = null
+
+  try {
+    const payload = {
+      email: username.value,
+      password: password.value,
+    }
+
+    const res = await axios.post('http://127.0.0.1:8000/api/login', payload)
+
+    localStorage.setItem('token', res.data.data.token)
+    localStorage.setItem('isLoggedIn', 'true')
+
+    // 1️⃣ Tampilkan modal sukses login
+    showSuccessModal.value = true
+
+    // 2️⃣ Setelah 3 detik → redirect ke /
+    setTimeout(() => {
+      router.push('/')
+    }, 3000)
+  } catch (err) {
+    errorMessage.value = err.response?.data?.message || 'Login gagal!'
+  } finally {
+    loading.value = false
+  }
+}
 </script>
-
-
-<style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
-
-.login-page {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  background: url("@/assets/gambar hotel.jpg") no-repeat center center/cover;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: 'Poppins', sans-serif;
-}
-
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  background: rgba(0, 0, 0, 0.50);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.login-container {
-  position: relative;
-  background: rgba(244, 244, 244, 0.5);
-  backdrop-filter: blur(1px);
-  -webkit-backdrop-filter: blur(8px);
-  padding: 2.5rem 2.8rem;
-  border-radius: 18px;
-  width: 360px;
-  max-width: 90%;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-  text-align: center;
-  color: #000;
-}
-
-.title {
-  font-size: 30px;
-  font-weight: 600;
-  margin-bottom: 2rem;
-  color: #000;
-}
-
-.form-group {
-  text-align: left;
-  margin-bottom: 1.2rem;
-}
-
-label {
-  display: block;
-  font-size: 13px;
-  font-weight: 500;
-  color: #000;
-  margin-bottom: 6px;
-}
-
-input {
-  width: 100%;
-  padding: 11px 14px;
-  border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  outline: none;
-  transition: all 0.2s;
-  background: rgba(255, 255, 255, 0.95);
-  box-sizing: border-box;
-  color: #000;
-}
-
-input::placeholder {
-  color: #b0b0b8;
-  font-size: 14px;
-}
-
-input:focus {
-  background: rgba(255, 255, 255, 1);
-  box-shadow: 0 0 0 2px rgba(0, 102, 255, 0.15);
-}
-
-.password-input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.password-input-wrapper input {
-  padding-right: 45px; 
-}
-
-.toggle-password {
-  position: absolute;
-  right: 12px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #555;
-}
-
-.eye-icon {
-  width: 22px;
-  height: 22px;
-  opacity: 0.6;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.toggle-password:hover .eye-icon {
-  opacity: 1;
-  transform: scale(1.05);
-}
-
-.btn {
-  width: 100%;
-  background: #0066ff;
-  color: white;
-  border: none;
-  padding: 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 15px;
-  margin-top: 1.2rem;
-  transition: all 0.2s;
-}
-
-.btn:hover {
-  background: #0052cc;
-}
-
-.btn:active {
-  transform: scale(0.98);
-}
-
-.footer {
-  margin-top: 1.2rem;
-  font-size: 13px;
-  color: #333;
-}
-
-.footer a {
-  color: #0066ff;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.footer a:hover {
-  text-decoration: underline;
-}
-
-
-</style>

@@ -1,268 +1,198 @@
 <template>
-  <div class="login-page">
-    <div class="overlay">
-      <div class="login-container">
-        <h2 class="title">Welcome to Atlanz</h2>
+  <div
+    class="fixed inset-0 bg-cover bg-center flex items-center justify-center"
+    style="background-image: url('/src/assets/gambar hotel.jpg')"
+  >
+    <div class="absolute inset-0 bg-black/50"></div>
 
-        <form @submit.prevent="register">
-          <div class="form-group">
-            <label>Name</label>
-            <input type="text" v-model="name" placeholder="Name" required />
+    <div
+      class="relative bg-white/40 backdrop-blur-md shadow-xl rounded-2xl p-8 w-[450px] max-w-[95%]"
+    >
+      <h2 class="text-3xl font-bold mb-6 text-center">Welcome to ATLANZ</h2>
+
+      <form @submit.prevent="register" class="space-y-4">
+        <!-- Name -->
+        <div>
+          <label class="block text-sm font-medium mb-1">Name</label>
+          <input
+            type="text"
+            v-model="name"
+            placeholder="Name"
+            required
+            class="w-full px-4 py-2 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 outline-none"
+          />
+        </div>
+
+        <!-- Email -->
+        <div>
+          <label class="block text-sm font-medium mb-1">Email</label>
+          <input
+            type="email"
+            v-model="email"
+            placeholder="example@gmail.com"
+            required
+            class="w-full px-4 py-2 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 outline-none"
+          />
+        </div>
+
+        <!-- Phone -->
+        <div>
+          <label class="block text-sm font-medium mb-1">Phone No</label>
+          <input
+            type="tel"
+            v-model="phone"
+            placeholder="Phone Number"
+            required
+            class="w-full px-4 py-2 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 outline-none"
+          />
+        </div>
+
+        <!-- Password -->
+        <div>
+          <label class="block text-sm font-medium mb-1">Password</label>
+          <div class="relative">
+            <input
+              :type="showPassword ? 'text' : 'password'"
+              v-model="password"
+              placeholder="6+ characters"
+              required
+              class="w-full pr-10 px-4 py-2 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 outline-none"
+            />
+            <button
+              type="button"
+              @click="togglePassword"
+              aria-label="Toggle password visibility"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 p-1"
+            >
+              <svg
+                v-if="showPassword"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                class="w-5 h-5"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.8"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.8"
+                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                />
+              </svg>
+
+              <svg
+                v-else
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                class="w-5 h-5"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.8"
+                  d="M3 3l18 18M10.58 10.58A3 3 0 0113.42 13.42M6.26 6.26A9.77 9.77 0 003 12c1.274 4.057 5.064 7 9.542 7a9.77 9.77 0 005.18-1.54M17.74 17.74A9.77 9.77 0 0021 12c-1.274-4.057-5.064-7-9.542-7a9.77 9.77 0 00-5.18 1.54"
+                />
+              </svg>
+            </button>
           </div>
+        </div>
 
-          <div class="form-group">
-            <label>Email</label>
-            <input type="email" v-model="email" placeholder="example@gmail.com" required />
-          </div>
+        <!-- Submit -->
+        <button
+          type="submit"
+          :disabled="loading"
+          class="w-full bg-blue-600 hover:bg-blue-700 transition text-white py-2 rounded-lg font-semibold"
+        >
+          {{ loading ? 'Loading...' : 'Register' }}
+        </button>
+      </form>
 
-          <div class="form-group">
-            <label>Phone No</label>
-            <input type="tel" v-model="phone" placeholder="Phone Number" required />
-          </div>
+      <!-- Error -->
+      <p v-if="errorMessage" class="text-red-600 text-center mt-3">
+        {{ errorMessage }}
+      </p>
 
-          <div class="form-group">
-            <label>Password</label>
-            <div class="password-input-wrapper">
-              <input
-                :type="showPassword ? 'text' : 'password'"
-                v-model="password"
-                placeholder="6+ characters"
-                required
-              />
-              <button type="button" class="toggle-password" @click="showPassword = !showPassword">
-                👁️
-              </button>
-            </div>
-          </div>
+      <!-- Success -->
+      <p v-if="successMessage" class="text-green-600 text-center mt-3">
+        {{ successMessage }}
+      </p>
 
-          <button type="submit" class="btn" :disabled="loading">
-            {{ loading ? 'Loading...' : 'Register' }}
-          </button>
-        </form>
-
-        <p v-if="errorMessage" style="color:red; margin-top:10px;">
-          {{ errorMessage }}
-        </p>
-
-        <p v-if="successMessage" style="color:green; margin-top:10px;">
-          {{ successMessage }}
-        </p>
-
-        <p class="footer">Have Account? <a href="#">Login</a></p>
-      </div>
+      <p class="text-center mt-4 text-sm text-gray-700">
+        Have Account?
+        <a href="/login" class="text-blue-600 font-semibold hover:underline">Login</a>
+      </p>
     </div>
   </div>
+  <SuccessCreateModal
+    v-model="showSuccessModal"
+    :title="'Account Created Successfully!'"
+    :message="'Please login now 😄'"
+    :buttonText="'Proceed to Login'"
+    @confirm="handleConfirm"
+  />
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue'
 import axios from 'axios'
+import { useRouter } from 'vue-router'
+import SuccessCreateModal from '@/components/SuccessCreateModal.vue'
 
-export default {
-  name: 'Register',
-  data() {
-    return {
-      name: '',
-      email: '',
-      phone: '',
-      password: '',
-      showPassword: false,
-      loading: false,
+const router = useRouter()
 
-      errorMessage: null,
-      successMessage: null,
+const name = ref('')
+const email = ref('')
+const phone = ref('')
+const password = ref('')
+const showPassword = ref(false)
+const loading = ref(false)
+
+const errorMessage = ref(null)
+const successMessage = ref(null)
+const showSuccessModal = ref(false)
+
+const togglePassword = () => {
+  showPassword.value = !showPassword.value
+}
+
+const handleConfirm = () => {
+  router.push('/login')
+}
+
+const register = async () => {
+  loading.value = true
+  errorMessage.value = null
+  successMessage.value = null
+
+  try {
+    const payload = {
+      name: name.value,
+      email: email.value,
+      password: password.value,
+      no_hp: phone.value,
     }
-  },
-  methods: {
-    async register() {
-      this.loading = true
-      this.errorMessage = null
-      this.successMessage = null
 
-      try {
-        const payload = {
-          name: this.name,
-          email: this.email,
-          password: this.password,
-          no_hp: this.phone,
-        }
+    const res = await axios.post('http://127.0.0.1:8000/api/register', payload)
 
-        const res = await axios.post('http://127.0.0.1:8000/api/register', payload)
-
-        this.successMessage = res.data.message || 'Register success!'
-        alert('Akun berhasil dibuat! Silakan login ya, Odi 😄')
-
-        this.$router.push('/login')
-      } catch (err) {
-        this.errorMessage =
-          err.response?.data?.errors ||
-          err.response?.data?.message ||
-          'Register gagal!'
-      } finally {
-        this.loading = false
-      }
-    },
-  },
+    successMessage.value = res.data.message || 'Register success!'
+    showSuccessModal.value = true // modal muncul
+  } catch (err) {
+    errorMessage.value =
+      err.response?.data?.errors || err.response?.data?.message || 'Register gagal!'
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 
-
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
-
-.login-page {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  background: url('@/assets/gambar hotel.jpg') no-repeat center center/cover;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: 'Poppins', sans-serif;
-}
-
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.login-container {
-  position: relative;
-  background: rgba(244, 244, 244, 0.5);
-  backdrop-filter: blur(1px);
-  -webkit-backdrop-filter: blur(8px);
-  padding: 2.5rem 3rem;
-  border-radius: 18px;
-  width: 450px;
-  max-width: 95%;
-  /* max-height: 90vh; */
-  /* overflow-y: auto; */
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-  text-align: center;
-  color: #000;
-}
-
-.title {
-  font-size: 30px;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-  color: #000;
-  font-family: 'Poppins', sans-serif;
-}
-
-.form-group {
-  text-align: left;
-  margin-bottom: 1rem;
-}
-
-label {
-  display: block;
-  font-size: 13px;
-  font-weight: 500;
-  color: #000;
-  margin-bottom: 6px;
-  font-family: 'Poppins', sans-serif;
-}
-
-input {
-  width: 100%;
-  padding: 11px 14px;
-  border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  outline: none;
-  transition: all 0.2s;
-  background: rgba(255, 255, 255, 0.95);
-  box-sizing: border-box;
-  color: #000;
-  font-family: 'Poppins', sans-serif;
-}
-
-input::placeholder {
-  color: #b0b0b8;
-  font-size: 14px;
-  font-family: 'Poppins', sans-serif;
-}
-
-input:focus {
-  background: rgba(255, 255, 255, 1);
-  box-shadow: 0 0 0 2px rgba(0, 102, 255, 0.15);
-}
-
-.password-input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.password-input-wrapper input {
-  padding-right: 42px;
-}
-
-.toggle-password {
-  position: absolute;
-  right: 10px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-  padding: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0.5;
-  transition: opacity 0.2s;
-}
-
-.toggle-password:hover {
-  opacity: 0.8;
-}
-
-.btn {
-  width: 100%;
-  background: #0066ff;
-  color: white;
-  border: none;
-  padding: 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 15px;
-  margin-top: 1rem;
-  transition: all 0.2s;
-  font-family: 'Poppins', sans-serif;
-}
-
-.btn:hover {
-  background: #0052cc;
-}
-
-.btn:active {
-  transform: scale(0.98);
-}
-
-.footer {
-  margin-top: 1rem;
-  font-size: 13px;
-  color: #333;
-  font-family: 'Poppins', sans-serif;
-}
-
-.footer a {
-  color: #0066ff;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.footer a:hover {
-  text-decoration: underline;
-}
+/* Tidak pakai CSS manual selain background-image */
 </style>
