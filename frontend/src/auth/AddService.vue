@@ -1,58 +1,92 @@
 <template>
-  <div class="bg-gray-100 min-h-screen flex flex-col items-center py-10">
-    <h2 class="text-3xl font-bold mb-10 text-gray-800">Additional Services</h2>
+  <section class="bg-[#0c2c67] min-h-screen py-20 text-white">
+    <div class="bg-white text-black rounded-2xl shadow-xl py-10 px-8 mx-auto w-[90%] max-w-4xl">
+      <h2 class="text-2xl font-semibold text-center text-[#0c2c67] mb-8">Additional Services</h2>
 
-    <div
-      v-for="(service, index) in services"
-      :key="index"
-      class="flex items-center justify-between bg-[#0c2250] text-white w-[950px] h-[220px] rounded-2xl overflow-hidden mb-10 shadow-lg px-4"
-    >
-      <!-- Gambar -->
-      <div class="w-[320px] h-[180px] overflow-hidden rounded-xl ml-2">
-        <img
-          :src="service.image"
-          :alt="service.name"
-          class="w-full h-full object-cover rounded-xl"
-        />
+      <!-- Loading State -->
+      <div v-if="loading" class="text-center text-gray-600 py-10">Loading services...</div>
+
+      <!-- Services List -->
+      <div v-else>
+        <div
+          v-for="service in services"
+          :key="service.id_service"
+          class="flex justify-between items-center border-b py-4"
+        >
+          <div>
+            <p class="font-semibold text-gray-800">{{ service.nama_service }}</p>
+            <p class="text-sm text-gray-600">
+              {{ formatRupiah(service.harga_service) }}
+            </p>
+          </div>
+
+          <input
+            type="checkbox"
+            class="w-5 h-5"
+            :value="service.id_service"
+            v-model="selectedServices"
+          />
+        </div>
       </div>
 
-      <!-- Teks dan Tombol -->
-      <div class="flex-1 px-10 flex justify-between items-center">
-        <div>
-          <h3 class="text-3xl italic font-semibold text-[#f6e05e] tracking-wide">
-            {{ service.name }}
-          </h3>
-          <p class="text-2xl font-bold mt-2">{{ service.price }}</p>
-        </div>
-
+      <!-- Button Next -->
+      <div class="flex justify-end mt-6">
         <button
-          class="bg-[#b7a34b] hover:bg-[#a2923f] text-black font-semibold px-8 py-2 rounded-md transition-transform hover:scale-105"
+          @click="goToBooking"
+          class="bg-[#b7a34b] hover:bg-[#9c8b3f] text-white px-6 py-2 rounded-md text-sm font-medium transition-transform hover:scale-105"
         >
-          Pilih
+          Lanjut Booking
         </button>
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script setup>
-const services = [
-  {
-    name: "YOGA",
-    image: new URL('@/assets/Yoga.png', import.meta.url).href,
-    price: "Rp. 180.000",
-  },
-  {
-    name: "SNORKLING",
-    image: new URL('@/assets/Snorkling.png', import.meta.url).href,
-    price: "Rp. 9.000",
-  },
-  {
-    name: "SPA",
-    image: new URL('@/assets/Spa.png', import.meta.url).href,
-    price: "Rp. 899.000",
-  },
-];
+import { ref, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import axios from 'axios'
+
+const route = useRoute()
+const router = useRouter()
+
+const services = ref([])
+const selectedServices = ref([])
+const loading = ref(true)
+
+// Ambil data services dari API
+onMounted(async () => {
+  try {
+    const res = await axios.get('http://127.0.0.1:8000/api/additional-service')
+    services.value = res.data.data ?? res.data
+  } catch (err) {
+    console.error('Gagal mengambil service:', err)
+  } finally {
+    loading.value = false
+  }
+})
+
+// Format rupiah
+const formatRupiah = (value) => {
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+  }).format(value)
+}
+
+// menuju halaman booking dengan service yang dipilih
+const goToBooking = () => {
+  router.push({
+    name: 'booking',
+    query: {
+      jenis_kamar_id: route.query.jenis_kamar_id,
+      check_in: route.query.check_in,
+      check_out: route.query.check_out,
+      rooms: route.query.rooms,
+      service_ids: JSON.stringify(selectedServices.value), // kirim sebagai array
+    },
+  })
+}
 </script>
 
 <style scoped>

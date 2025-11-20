@@ -8,6 +8,7 @@ class AdditionalService extends Model
 {
     protected $primaryKey = 'id_service';
 
+    protected $table = 'additional_services';
     protected $fillable = [
         'nama_service',
         'deskripsi_service',
