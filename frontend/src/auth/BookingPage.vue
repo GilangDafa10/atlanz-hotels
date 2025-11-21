@@ -43,7 +43,7 @@
                       :key="f.id_fasilitas"
                       class="flex items-center gap-2"
                     >
-                      <i :class="f.icon_fasilitas" class="text-[#0c2c67] text-base"></i>
+                      <i :class="f.icon_fasilitas"></i>
                       {{ f.nama_fasilitas }}
                     </li>
                   </ul>
@@ -242,7 +242,7 @@ onMounted(async () => {
 });
 </script>
 
-<style scoped>
+<style>
 * {
   font-family: "Poppins", sans-serif;
 }
