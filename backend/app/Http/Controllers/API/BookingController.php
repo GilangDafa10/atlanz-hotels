@@ -66,6 +66,13 @@ class BookingController extends Controller
                                         'deskripsi' => $k->jenisKamar->deskripsi,
                                         'url_gambar' => $k->jenisKamar->url_gambar,
                                     ],
+                                    'fasilitas' => $k->jenisKamar->fasilitas->map(function ($f) {
+                                        return [
+                                            'id_fasilitas' => $f->id_fasilitas,
+                                            'nama_fasilitas' => $f->nama_fasilitas,
+                                            'icon_fasilitas' => $f->icon_fasilitas
+                                        ];
+                                    })
                                 ];
                             }),
 
@@ -248,6 +255,13 @@ class BookingController extends Controller
                         'deskripsi' => $k->jenisKamar->deskripsi,
                         'url_gambar' => $k->jenisKamar->url_gambar,
                     ],
+                    'fasilitas' => $k->jenisKamar->fasilitas->map(function ($f) {
+                        return [
+                            'id_fasilitas' => $f->id_fasilitas,
+                            'nama_fasilitas' => $f->nama_fasilitas,
+                            'icon_fasilitas' => $f->icon_fasilitas
+                        ];
+                    })
                 ];
             }
 
