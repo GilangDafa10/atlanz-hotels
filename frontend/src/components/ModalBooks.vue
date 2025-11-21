@@ -40,7 +40,7 @@
             <div>
               <button
                 @click="submitBooking"
-                class="w-full bg-[#c8a349] px-8 py-2 text-white font-semibold hover:opacity-80"
+                class="w-full bg-[#c8a349] px-8 py-2 text-white rounded font-semibold hover:opacity-80"
               >
                 CARI KAMAR
               </button>
