@@ -1,5 +1,5 @@
 <template>
-  <section class="min-h-screen bg-[#0c2c67] py-12">
+  <section class="min-h-screen bg-[#0c2c67] py-30">
     <div class="max-w-6xl mx-auto rounded-xl ">
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -58,10 +58,10 @@
               <div class="flex justify-between items-center mb-3">
                 <h2 class="text-lg font-semibold text-gray-800">Additional Services</h2>
                 <button
-                  @click="goToAddService"
-                  class="px-3 py-1 bg-[#0c2c67] text-white text-xs rounded flex items-center gap-1"
+                  @click="goToAdditionalServices"
+  class="flex items-center gap-2 bg-[#0c2c67] hover:bg-[#081e47] text-white px-4 py-2 rounded-md text-sm font-medium mt-2 transition-transform hover:scale-105"
                 >
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="w- h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                   </svg>
                   Add Service
@@ -105,12 +105,10 @@
         <div class="bg-white rounded-xl shadow-md p-6 h-fit">
 
           <div class="flex gap-2 mb-3">
-            <button class="px-4 py-1 bg-gray-300 text-sm rounded border">
+            <button class="px-7 py-1 bg-gray-300 text-sm rounded">
               Summary
             </button>
-            <button class="px-4 py-1 bg-gray-200 text-sm rounded border">
-              Details
-            </button>
+
           </div>
 
           <!-- Subtotal -->
@@ -135,12 +133,7 @@
 
           <!-- Buttons -->
           <div class="flex gap-3">
-            <button
-              class="flex-1 bg-[#b7a34b] text-white py-2 rounded hover:bg-[#9c8b3f] transition"
-            >
-              Agree
-            </button>
-
+          
             <button
               @click="goToPayment"
               class="flex-1 bg-gray-300 text-gray-700 py-2 rounded"

@@ -12,6 +12,7 @@ import Register from "@/auth/Register.vue";
 import RoomsSelection from "@/pages/RoomsSelection.vue";
 import Confirmation from "@/components/Confirmation.vue";
 import CreateInvoice from "@/pembayaran/CreateInvoice.vue";
+import BookingPage from "@/pages/BookingPage.vue";
 // import About from "../pages/About.vue";
 // import DetailMobil from "../pages/DetailMobil.vue";
 
@@ -34,7 +35,7 @@ const routes = [
     {
         path: "/booking",
         name: "booking",
-        component: Booking,
+        component: BookingPage,
     },
     {
         path: "/AddService",
@@ -65,6 +66,11 @@ const routes = [
         path: "/Confirmation",
         name: "confirmation",
         component: Confirmation,
+    },
+    {
+        path: "/BookingPage",
+        name: "bookingpage",
+        component: BookingPage,
     },
     // {
     //     path: "/about",

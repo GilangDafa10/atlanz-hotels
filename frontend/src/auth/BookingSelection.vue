@@ -27,7 +27,7 @@
             </p>
           </div>
 
-          <div class="p-3 flex flex-col items-center">
+          <div class="p-5 flex flex-col items-center">
             <p class="text-xl font-bold text-gray-700 mb-3">
               {{ formatRupiah(room.harga_permalam) }}
             </p>
