@@ -69,6 +69,7 @@ const close = () => emit('close')
 
 const submitBooking = () => {
   // Redirect ke halaman rooms dengan query
+  
   router.push({
     path: '/cari-kamar',
     query: {

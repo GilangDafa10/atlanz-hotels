@@ -7,7 +7,6 @@ import Rooms from "../pages/Rooms.vue";
 import Booking from "../auth/BookingPage.vue";
 import AddService from "@/pages/AddService.vue";
 import Profile from "@/pages/Profil.vue";
-import Reservation from "@/pages/Reservation.vue";
 import Login from "@/auth/Login.vue";
 import Register from "@/auth/Register.vue";
 import RoomsSelection from "@/pages/RoomsSelection.vue";
@@ -51,11 +50,6 @@ const routes = [
         path: "/Profile",
         name: "profile",
         component: Profile,
-    },
-    {
-        path: "/Reservation",
-        name: "reservation",
-        component: Reservation,
     },
     {
         path: "/Login",
