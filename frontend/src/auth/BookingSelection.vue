@@ -27,7 +27,7 @@
             </p>
           </div>
 
-          <div class="p-5 flex flex-col items-center">
+          <div class="p-3 flex flex-col items-center">
             <p class="text-xl font-bold text-gray-700 mb-3">
               {{ formatRupiah(room.harga_permalam) }}
             </p>
@@ -39,12 +39,12 @@
               BOOK NOW
             </button>
 
-            <button
+            <!-- <button
               @click="goToAdditionalServices(room)"
               class="bg-[#0c2c67] hover:bg-[#081e47] text-white px-5 py-2 rounded-md text-sm font-medium mt-2 transition-transform hover:scale-105"
             >
               ADDITIONAL SERVICES
-            </button>
+            </button> -->
           </div>
         </div>
       </div>

@@ -37,16 +37,17 @@
                   </p>
 
                   <p class="mt-3 font-semibold text-gray-700">Fasilitas :</p>
-                  <ul class="text-gray-700 text-sm">
-                    <li class="flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg> Bed</li>
-                    <li class="flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 117.778 0M12 20h.01m-7.048-1.414a3 3 0 115.698 0L12 20l1.369-1.414a3 3 0 115.698 0L20 20H4z" /></svg> Wi-Fi</li>
-                    <li class="flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9l9 9 9-9" /></svg> Shower</li>
-                    <li class="flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2" /></svg> TV</li>
-                    <li class="flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6M9 8h6m-6 8h6M5 4h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z" /></svg> Perlengkapan Mandi</li>
-                    <li class="flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg> Kulkas</li>
-                    <li class="flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.333-.83a2 2 0 00-1.512.14l-1.533 1.022a2 2 0 01-1.022.296l-1.533-.511a2 2 0 00-1.512.14l-1.533 1.022a2 2 0 01-1.022.296l-1.533-.511a2 2 0 00-1.512.14l-1.533 1.022a2 2 0 01-1.022.296l-1.533-.511a2 2 0 00-1.022 1.732l1.533 2.555a2 2 0 01.14 1.512l-1.022 1.533a2 2 0 00.296 1.022l1.533 1.022a2 2 0 01.14 1.512l-1.022 1.533a2 2 0 00.296 1.022l1.533 1.022a2 2 0 01.14 1.512l-1.022 1.533a2 2 0 00.296 1.022l1.533 1.022a2 2 0 01.14 1.512l-1.022 1.533a2 2 0 00.296 1.022l1.533 1.022a2 2 0 01.14 1.512l-1.022 1.533a2 2 0 00.296 1.022l1.533 1.022" /></svg> Mesin Kopi</li>
-                    <li class="flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg> Setrika</li>
+                  <ul class="text-gray-700 text-sm space-y-1">
+                    <li
+                      v-for="f in bookingData.kamars[0].fasilitas"
+                      :key="f.id_fasilitas"
+                      class="flex items-center gap-2"
+                    >
+                      <i :class="f.icon_fasilitas"></i>
+                      {{ f.nama_fasilitas }}
+                    </li>
                   </ul>
+
                 </div>
               </div>
             </div>
@@ -241,7 +242,7 @@ onMounted(async () => {
 });
 </script>
 
-<style scoped>
+<style>
 * {
   font-family: "Poppins", sans-serif;
 }
