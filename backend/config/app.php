@@ -67,6 +67,10 @@ return [
 
     'timezone' => 'Asia/Jakarta',
 
+    'providers' => [
+        Laravel\Socialite\SocialiteServiceProvider::class,
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration
