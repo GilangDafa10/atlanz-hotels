@@ -33,4 +33,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Booking::class, 'id_user');
     }
+
+    public function activeOTP()
+    {
+        return $this->hasOne(UserOTP::class,'user_id')->where('expired_at','>', now());
+    }
 }
