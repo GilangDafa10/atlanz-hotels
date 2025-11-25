@@ -6,12 +6,13 @@ use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\TemporaryUser;
+use App\Otp\UserRegistrationOtp;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Requests\UserStoreRequest;
+use SadiqSalau\LaravelOtp\OtpBroker;
 use SadiqSalau\LaravelOtp\Facades\Otp;
-use App\Otp\UserRegistrationOtp;
+use App\Http\Requests\UserStoreRequest;
 use Illuminate\Support\Facades\Notification;
 
 class AuthController extends Controller
@@ -46,10 +47,10 @@ class AuthController extends Controller
             'code'  => 'required|string'
         ]);
 
-        // Gunakan attempt() — akan memproses OTP dan memanggil process() pada Otp class
+        // Pastikan identifier yang dipakai sama persis dengan waktu mengirim OTP (email)
         $otpAttempt = Otp::identifier($request->email)->attempt($request->code);
 
-        // possible statuses: OTP_EMPTY, OTP_MISMATCHED, OTP_PROCESSED
+        // Periksa hasil
         if (!isset($otpAttempt['status'])) {
             return response()->json([
                 'success' => false,
@@ -72,7 +73,7 @@ class AuthController extends Controller
         }
 
         if ($otpAttempt['status'] === Otp::OTP_PROCESSED) {
-            // package returns result from process() under 'result'
+            // package mengembalikan hasil process() di key 'result'
             $createdUser = $otpAttempt['result'] ?? null;
 
             if (!$createdUser) {
@@ -82,26 +83,57 @@ class AuthController extends Controller
                 ], 500);
             }
 
-            // buat token (Sanctum)
+            // Buat token Sanctum
             $token = $createdUser->createToken('auth_token')->plainTextToken;
 
             return response()->json([
                 'success' => true,
                 'message' => __('otp.processed') ?? 'OTP processed and user created',
                 'data' => [
-                    'user' => $createdUser,
+                    'user'  => $createdUser,
                     'token' => $token
                 ]
             ], 200);
         }
 
-        // fallback
         return response()->json([
             'success' => false,
             'message' => 'Unhandled OTP status: ' . $otpAttempt['status']
         ], 500);
     }
 
+    public function resendOtp(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        // cari temporary user
+        $tempUser = TemporaryUser::where('email', $request->email)->first();
+
+        if (!$tempUser) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Temporary user not found. Please register again.'
+            ], 404);
+        }
+
+        // kirim ulang OTP
+        $result = Otp::identifier($tempUser->email)
+            ->send(new UserRegistrationOtp($tempUser), Notification::route('mail', $tempUser->email));
+
+        if ($result['status'] !== Otp::OTP_SENT) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to resend OTP.'
+            ], 500);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'OTP has been resent to your email.'
+        ]);
+    }
 
     public function login(Request $request)
     {

@@ -17,6 +17,7 @@ class User extends Authenticatable
         'password',
         'no_hp',
         'id_role',
+        'email_verified_at',
     ];
 
     protected $hidden = [
@@ -32,10 +33,5 @@ class User extends Authenticatable
     public function bookings()
     {
         return $this->hasMany(Booking::class, 'id_user');
-    }
-
-    public function activeOTP()
-    {
-        return $this->hasOne(UserOTP::class,'user_id')->where('expired_at','>', now());
     }
 }
