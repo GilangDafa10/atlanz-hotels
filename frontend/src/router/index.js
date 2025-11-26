@@ -5,6 +5,11 @@ import Home from "../pages/Home.vue";
 import Rooms from "../pages/Rooms.vue";
 // import Booking from "../pages/Booking.vue";
 import Booking from "../auth/BookingPage.vue";
+import AdminLayout from "../layouts/AdminLayouts.vue";
+import Dashboard from "../admin/Dashboard/Dashboard.vue";
+import Fasilitas from "../admin/Fasilitas/Index.vue";
+import JenisKamar from "../admin/JenisKamar/Index.vue";
+import Kamar from "../admin/Kamar/Index.vue";
 import AddService from "@/pages/AddService.vue";
 import Profile from "@/pages/Profil.vue";
 import Login from "@/auth/Login.vue";
@@ -71,6 +76,52 @@ const routes = [
         path: "/BookingPage",
         name: "bookingpage",
         component: BookingPage,
+    },
+    {
+        path: "/dashboard",
+        component: AdminLayout,
+        children: [
+        {
+            path: "",
+            name: "admin.dashboard",
+            component: Dashboard,
+        },
+        ],
+    },
+
+    {
+        path: "/Fasilitas",
+        component: AdminLayout,
+        children: [
+        {
+            path: "",
+            name: "admin.Fasilitas",
+            component: Fasilitas,
+        },
+        ],
+    },
+
+    {
+        path: "/JenisKamar",
+        component: AdminLayout,
+        children: [
+        {
+            path: "",
+            name: "admin.JenisKamar",
+            component: JenisKamar,
+        },
+        ],
+    },
+    {
+        path: "/Kamar",
+        component: AdminLayout,
+        children: [
+        {
+            path: "",
+            name: "admin.Kamar",
+            component: Kamar,
+        },
+        ],
     },
     // {
     //     path: "/about",

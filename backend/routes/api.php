@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\API\DashboardController;
 use App\Http\Controllers\API\FasilitasController;
 use App\Http\Controllers\API\PembayaranController;
+use App\Http\Controllers\API\SocialAuthController;
 
 // ================================
 // PUBLIC ROUTES
@@ -18,6 +19,8 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
 Route::post('/resend-otp', [AuthController::class, 'resendOtp']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/auth/{provider}/redirect', [SocialAuthController::class, 'redirect']);
+Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'callback']);
 
 // Midtrans
 Route::post('/midtrans-notification', [PembayaranController::class, 'notificationHandler']);
