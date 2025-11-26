@@ -7,6 +7,7 @@ use App\Http\Controllers\API\JenisKamarController;
 use App\Http\Controllers\API\KamarController;
 use App\Http\Controllers\API\AdditionalServiceController;
 use App\Http\Controllers\Api\BookingController;
+use App\Http\Controllers\API\DashboardController;
 use App\Http\Controllers\API\FasilitasController;
 use App\Http\Controllers\API\PembayaranController;
 
@@ -14,10 +15,16 @@ use App\Http\Controllers\API\PembayaranController;
 // PUBLIC ROUTES
 // ================================
 Route::post('/register', [AuthController::class, 'register']);
+Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
+Route::post('/resend-otp', [AuthController::class, 'resendOtp']);
 Route::post('/login', [AuthController::class, 'login']);
 
 // Midtrans
 Route::post('/midtrans-notification', [PembayaranController::class, 'notificationHandler']);
+
+Route::get('/jenis-kamar', [JenisKamarController::class, 'index']);
+Route::get('/additional-service', [AdditionalServiceController::class, 'index']);
+Route::get('/fasilitas', [FasilitasController::class, 'index']);
 
 // PROTECTED ROUTES (login required)
 Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function () {
@@ -30,13 +37,11 @@ Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function ()
     Route::post('/logout', [AuthController::class, 'logout']);
 
     // ========== READ ONLY (Admin & User) ==========
-    Route::get('/jenis-kamar', [JenisKamarController::class, 'index']);
     Route::get('/jenis-kamar/{id_jenis_kamar}', [JenisKamarController::class, 'show']);
 
     Route::get('/kamar', [KamarController::class, 'index']);
     Route::get('/kamar/{id_kamar}', [KamarController::class, 'show']);
 
-    Route::get('/additional-service', [AdditionalServiceController::class, 'index']);
     Route::get('/additional-service/{id_service}', [AdditionalServiceController::class, 'show']);
 
     // Midtrans
@@ -46,10 +51,11 @@ Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function ()
     // booking
     Route::post('/booking', [BookingController::class, 'store']);
     Route::get('/booking', [BookingController::class, 'index']);
+    Route::get('/booking/{id_booking}', [BookingController::class, 'show']);
+    Route::get('/booking/batal/{id_booking}', [BookingController::class, 'destroy']);
 
     // ========== READ-ONLY Fasilitas & FasilitasJenisKamar ==========
     // USER (ROLE 2) dan ADMIN bisa mengakses READ-ONLY
-    Route::get('/fasilitas', [FasilitasController::class, 'index']);
     Route::get('/fasilitas/{id_fasilitas}', [FasilitasController::class, 'show']);
 
     // ================================
@@ -83,5 +89,8 @@ Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function ()
         Route::post('/fasilitas', [FasilitasController::class, 'store']);
         Route::put('/fasilitas/{id_fasilitas}', [FasilitasController::class, 'update']);
         Route::delete('/fasilitas/{id_fasilitas}', [FasilitasController::class, 'destroy']);
+
+        // Dashboard
+        Route::get('/dashboard', [DashboardController::class, 'index']);
     });
 });

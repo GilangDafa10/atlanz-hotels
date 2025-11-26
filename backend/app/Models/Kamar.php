@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -31,12 +32,18 @@ class Kamar extends Model
     
     public function isAvailable($checkin, $checkout)
     {
-        return !$this->bookings()
-            ->where('status_booking', 'lunas')
-            ->where(function($query) use ($checkin, $checkout) {
-                $query->whereBetween('tgl_checkin', [$checkin, $checkout])
-                      ->orWhereBetween('tgl_checkout', [$checkin, $checkout]);
-            })
+        $checkin = $checkin instanceof Carbon ? $checkin : Carbon::parse($checkin);
+        $checkout = $checkout instanceof Carbon ? $checkout : Carbon::parse($checkout);
+
+        $overlapExists = $this->bookings()
+            ->whereIn('status_booking', ['berhasil', 'dibayar'])
+            ->whereRaw('NOT (tgl_checkout <= ? OR tgl_checkin >= ?)', [
+                $checkin->toDateTimeString(),
+                $checkout->toDateTimeString()
+            ])
             ->exists();
+
+        return !$overlapExists;
     }
+
 }
