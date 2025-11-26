@@ -72,6 +72,52 @@ const routes = [
         name: "bookingpage",
         component: BookingPage,
     },
+    {
+        path: "/dashboard",
+        component: AdminLayout,
+        children: [
+        {
+            path: "",
+            name: "admin.dashboard",
+            component: Dashboard,
+        },
+        ],
+    },
+
+    {
+        path: "/Fasilitas",
+        component: AdminLayout,
+        children: [
+        {
+            path: "",
+            name: "admin.Fasilitas",
+            component: Fasilitas,
+        },
+        ],
+    },
+
+    {
+        path: "/JenisKamar",
+        component: AdminLayout,
+        children: [
+        {
+            path: "",
+            name: "admin.JenisKamar",
+            component: JenisKamar,
+        },
+        ],
+    },
+    {
+        path: "/Kamar",
+        component: AdminLayout,
+        children: [
+        {
+            path: "",
+            name: "admin.Kamar",
+            component: Kamar,
+        },
+        ],
+    },
     // {
     //     path: "/about",
     //     name: "about",
