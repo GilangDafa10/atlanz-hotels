@@ -48,11 +48,6 @@ class SocialAuthController extends Controller
             ->where('id', explode('|', $token)[0])
             ->update(['expires_at' => $expiresAt]);
 
-        return response()->json([
-            'status'  => true,
-            'message' => 'Login sosial berhasil',
-            'token'   => $token,
-            'user'    => $user
-        ]);
+        return redirect()->away("http://localhost:5173/login?token=$token");
     }
 }

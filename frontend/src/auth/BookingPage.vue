@@ -1,12 +1,9 @@
 <template>
   <section class="min-h-screen bg-[#0c2c67] py-30">
-    <div class="max-w-6xl mx-auto rounded-xl ">
-
+    <div class="max-w-6xl mx-auto rounded-xl">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
         <!-- LEFT MAIN CARD -->
         <div class="lg:col-span-2 bg-white rounded-xl p-6 shadow-md">
-
           <h1 class="text-xl font-semibold text-[#0c2c67] mb-3">Booking Summary</h1>
 
           <!-- Loading -->
@@ -16,7 +13,6 @@
 
           <!-- Booking Data -->
           <div v-else-if="bookingData">
-
             <!-- Room Info -->
             <div class="mb-6">
               <div class="flex gap-4">
@@ -27,9 +23,7 @@
                 />
 
                 <div class="text-sm">
-                  <p class="font-semibold text-gray-800 text-lg mb-2">
-                    Hotel Atlanz Indonesia
-                  </p>
+                  <p class="font-semibold text-gray-800 text-lg mb-2">Hotel Atlanz Indonesia</p>
 
                   <p class="font-semibold">
                     {{ formatDate(bookingData.tgl_checkin) }} -
@@ -47,22 +41,25 @@
                       {{ f.nama_fasilitas }}
                     </li>
                   </ul>
-
                 </div>
               </div>
             </div>
 
             <!-- Additional Services -->
             <div class="border border-gray-300 rounded-xl px-6 py-4 mb-6 bg-white">
-
               <div class="flex justify-between items-center mb-3">
                 <h2 class="text-lg font-semibold text-gray-800">Additional Services</h2>
                 <button
                   @click="goToAdditionalServices"
-  class="flex items-center gap-2 bg-[#0c2c67] hover:bg-[#081e47] text-white px-4 py-2 rounded-md text-sm font-medium mt-2 transition-transform hover:scale-105"
+                  class="flex items-center gap-2 bg-[#0c2c67] hover:bg-[#081e47] text-white px-4 py-2 rounded-md text-sm font-medium mt-2 transition-transform hover:scale-105"
                 >
                   <svg class="w- h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                    />
                   </svg>
                   Add Service
                 </button>
@@ -75,7 +72,11 @@
                   class="flex items-center gap-5 border rounded-xl p-4 mb-4"
                 >
                   <img
-                    :src="srv.url_gambar ? `http://127.0.0.1:8000/storage/${srv.url_gambar}` : '/src/assets/Yoga.png'"
+                    :src="
+                      srv.url_gambar
+                        ? `http://127.0.0.1:8000/storage/${srv.url_gambar}`
+                        : '/src/assets/Yoga.png'
+                    "
                     class="w-40 h-24 object-cover rounded-lg"
                   />
                   <div>
@@ -86,29 +87,20 @@
                 </div>
               </div>
 
-              <p v-else class="text-gray-600">
-                Tidak ada layanan tambahan dipilih.
-              </p>
-
+              <p v-else class="text-gray-600">Tidak ada layanan tambahan dipilih.</p>
             </div>
-
           </div>
 
           <!-- Error state -->
           <div v-else class="text-center text-red-600 py-10">
             Terjadi kesalahan mengambil data booking.
           </div>
-
         </div>
 
         <!-- RIGHT SUMMARY -->
         <div class="bg-white rounded-xl shadow-md p-6 h-fit">
-
           <div class="flex gap-2 mb-3">
-            <button class="px-7 py-1 bg-gray-300 text-sm rounded">
-              Summary
-            </button>
-
+            <button class="px-7 py-1 bg-gray-300 text-sm rounded">Summary</button>
           </div>
 
           <!-- Subtotal -->
@@ -133,84 +125,51 @@
 
           <!-- Buttons -->
           <div class="flex gap-3">
-          
-            <button
-              @click="goToPayment"
-              class="flex-1 bg-gray-300 text-gray-700 py-2 rounded"
-            >
+            <button @click="goToPayment" class="flex-1 bg-gray-300 text-gray-700 py-2 rounded">
               Checkout
             </button>
           </div>
         </div>
-
       </div>
-
     </div>
   </section>
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import axios from "axios";
+import { onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import axios from 'axios'
 
-const route = useRoute();
-const router = useRouter();
+const route = useRoute()
+const router = useRouter()
 
-const loading = ref(true);
-const bookingData = ref(null);
+const loading = ref(false)
+const bookingData = ref(null)
 
 // Format date
 const formatDate = (dateString) =>
-  new Date(dateString).toLocaleDateString("id-ID", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+  new Date(dateString).toLocaleDateString('id-ID', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  })
 
 // Format rupiah
 const formatRupiah = (value) =>
-  new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-  }).format(value);
+  new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+  }).format(value)
 
-// Handle image error
-const handleImageError = (e) => {
-  e.target.src = '/images/default-room.jpg';
-};
+// Handle image fallback
+const handleImageError = (e) => (e.target.src = '/images/default-room.jpg')
 
-// NAVIGATE TO ADD SERVICE
-const goToAddService = () => {
-  if (!bookingData.value?.id_booking) return;
-  router.push({
-    name: 'add-service', // pastikan route ini ada di router Anda
-    query: {
-      id_booking: bookingData.value.id_booking,
-      jenis_kamar_id: route.query.jenis_kamar_id,
-      check_in: route.query.check_in,
-      check_out: route.query.check_out,
-      rooms: route.query.rooms,
-    }
-  });
-};
-
-// NAVIGATE PAYMENT
-const goToPayment = () => {
-  if (!bookingData.value?.id_booking) return;
-  router.push({
-    name: "midtrans-payment",
-    query: {
-      id_booking: bookingData.value.id_booking,
-    },
-  });
-};
-
-// GET BOOKING DATA
-onMounted(async () => {
+// 👉 BUTTON CREATE BOOKING + REDIRECT PAYMENT
+const goToPayment = async () => {
   try {
-    const serviceArray =
-      route.query.service_ids ? JSON.parse(route.query.service_ids) : [];
+    loading.value = true
+
+    const serviceArray = route.query.service_ids ? JSON.parse(route.query.service_ids) : []
 
     const payload = {
       jenis_kamar_id: Number(route.query.jenis_kamar_id),
@@ -218,25 +177,57 @@ onMounted(async () => {
       tgl_checkout: route.query.check_out,
       jumlah: Number(route.query.rooms),
       service_ids: serviceArray,
-    };
+    }
 
-    const res = await axios.post("http://127.0.0.1:8000/api/booking", payload, {
+    const res = await axios.post('http://127.0.0.1:8000/api/booking', payload, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
-    });
+    })
 
-    bookingData.value = res.data.data.booking;
+    bookingData.value = res.data.data.booking
+
+    // Redirect ke pembayaran
+    router.push({
+      name: 'midtrans-payment',
+      query: { id_booking: bookingData.value.id_booking },
+    })
   } catch (err) {
-    console.error("Booking error:", err.response?.data || err);
+    console.error('Booking error:', err.response?.data || err)
+    alert('Booking gagal dibuat. Periksa data Anda.')
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-});
+}
+
+// Tidak ada lagi API call disini
+onMounted(async () => {
+  try {
+    loading.value = true
+
+    const serviceArray = route.query.service_ids ? JSON.parse(route.query.service_ids) : []
+
+    const res = await axios.get('http://127.0.0.1:8000/api/booking', {
+      params: {
+        jenis_kamar_id: route.query.jenis_kamar_id,
+        tgl_checkin: route.query.check_in,
+        tgl_checkout: route.query.check_out,
+        jumlah: route.query.rooms,
+        service_ids: serviceArray,
+      },
+    })
+
+    bookingData.value = res.data.data
+  } catch (err) {
+    console.error('Preview booking error:', err.response?.data || err)
+  } finally {
+    loading.value = false
+  }
+})
 </script>
 
 <style>
 * {
-  font-family: "Poppins", sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 </style>

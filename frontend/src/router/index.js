@@ -35,8 +35,51 @@ const routes = [
         name: "rooms",
         component: Rooms,
     },
-    // ... (routes non-admin lainnya)
-
+    {
+        path: "/cari-kamar",
+        name: "cari-kamar",
+        component: RoomsSelection,
+    },
+    {
+        path: "/booking",
+        name: "booking",
+        component: BookingPage,
+    },
+    {
+        path: "/AddService",
+        name: "addservice",
+        component: AddService,
+    },
+    {
+        path: '/payment',
+        name: 'midtrans-payment',
+        component: CreateInvoice,
+    },
+    {
+        path: "/Profile",
+        name: "profile",
+        component: Profile,
+    },
+    {
+        path: "/Login",
+        name: "login",
+        component: Login,
+    },
+    {
+        path: '/oauth/callback',
+        name: 'oauth.callback',
+        component: () => import('@/pages/OauthCallback.vue')
+    },
+    {
+        path: '/otp',
+        name: 'otp',
+        component: () => import('@/RegisterPage/OTP.vue')
+    },
+    {
+        path: "/Register",
+        name: "register",
+        component: Register,
+    },
     {
         path: "/Confirmation",
         name: "confirmation",
@@ -53,16 +96,50 @@ const routes = [
         path: "/dashboard",
         component: AdminLayout,
         children: [
-        {
-            path: "",
-            name: "admin.dashboard",
-            component: Dashboard,
-        },
+            {
+                path: "",
+                name: "admin.dashboard",
+                component: Dashboard,
+            },
         ],
     },
     
     // ... (Fasilitas, JenisKamar, Kamar, AdditionalServices routes)
 
+    {
+        path: "/Fasilitas",
+        component: AdminLayout,
+        children: [
+            {
+                path: "",
+                name: "admin.Fasilitas",
+                component: Fasilitas,
+            },
+        ],
+    },
+
+    {
+        path: "/JenisKamar",
+        component: AdminLayout,
+        children: [
+            {
+                path: "",
+                name: "admin.JenisKamar",
+                component: JenisKamar,
+            },
+        ],
+    },
+    {
+        path: "/Kamar",
+        component: AdminLayout,
+        children: [
+            {
+                path: "",
+                name: "admin.Kamar",
+                component: Kamar,
+            },
+        ],
+    },
     {
         path: "/AdditionalServices",
         component: AdminLayout,
