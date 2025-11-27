@@ -38,7 +38,7 @@
 </template>
 
 <script setup>
-// Tambahkan Package dan Utensils (atau icon lain yang relevan)
+// Pastikan icon Users diimpor
 import { Home, BedDouble, Users, NotebookPen, HelpCircle, Settings, Package, Utensils } from "lucide-vue-next"; 
 
 const menu = [
@@ -46,9 +46,9 @@ const menu = [
   { name: "Jenis Kamar", to: "/JenisKamar", icon: BedDouble },
   { name: "Kamar", to: "/Kamar", icon: BedDouble },
   { name: "Fasilitas", to: "/Fasilitas", icon: NotebookPen },
-  // Tambahkan item baru di sini
   { name: "Additional Services", to: "/AdditionalServices", icon: Package }, 
-  { name: "Users", to: "/users", icon: Users },
+  // ✅ Users sudah ada dan mengarah ke /users
+  { name: "Users", to: "/users", icon: Users }, 
   { name: "Booking Details", to: "/booking-details", icon: NotebookPen },
   { name: "Help", to: "/help", icon: HelpCircle },
 ];
