@@ -19,6 +19,7 @@
     "@iconify/vue": "^5.0.0",
     "@tailwindcss/vite": "^4.1.16",
     "axios": "^1.13.2",
+    "lucide-vue-next": "^0.554.0",
     "tailwindcss": "^4.1.16",
     "vue": "^3.5.22",
     "vue-router": "^4.6.3"

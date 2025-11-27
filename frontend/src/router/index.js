@@ -10,6 +10,7 @@ import Dashboard from "../admin/Dashboard/Dashboard.vue";
 import Fasilitas from "../admin/Fasilitas/Index.vue";
 import JenisKamar from "../admin/JenisKamar/Index.vue";
 import Kamar from "../admin/Kamar/Index.vue";
+import AdditionalServices from "../admin/AdditionalServices/Index.vue";
 import AddService from "@/pages/AddService.vue";
 import Profile from "@/pages/Profil.vue";
 import Login from "@/auth/Login.vue";
@@ -131,6 +132,17 @@ const routes = [
                 name: "admin.Kamar",
                 component: Kamar,
             },
+        ],
+    },
+    {
+        path: "/AdditionalServices",
+        component: AdminLayout,
+        children: [
+        {
+            path: "",
+            name: "admin.AdditionalServices",
+            component: AdditionalServices,
+        },
         ],
     },
     // {
