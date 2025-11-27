@@ -134,8 +134,8 @@
   <SuccessCreateModal
     v-model="showSuccessModal"
     :title="'Account Created Successfully!'"
-    :message="'Please login now 😄'"
-    :buttonText="'Proceed to Login'"
+    :message="'Kode OTP akan dikirim melalui email 😄'"
+    :buttonText="'ke Gmail'"
     @confirm="handleConfirm"
   />
 </template>
@@ -164,7 +164,11 @@ const togglePassword = () => {
 }
 
 const handleConfirm = () => {
-  router.push('/login')
+  // SUCCESS — redirect ke halaman OTP
+  router.push({
+    path: '/otp',
+    query: { email: email.value },
+  })
 }
 
 const register = async () => {

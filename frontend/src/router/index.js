@@ -63,6 +63,16 @@ const routes = [
         component: Login,
     },
     {
+        path: '/oauth/callback',
+        name: 'oauth.callback',
+        component: () => import('@/pages/OauthCallback.vue')
+    },
+    {
+        path: '/otp',
+        name: 'otp',
+        component: () => import('@/RegisterPage/OTP.vue')
+    },
+    {
         path: "/Register",
         name: "register",
         component: Register,
@@ -81,11 +91,11 @@ const routes = [
         path: "/dashboard",
         component: AdminLayout,
         children: [
-        {
-            path: "",
-            name: "admin.dashboard",
-            component: Dashboard,
-        },
+            {
+                path: "",
+                name: "admin.dashboard",
+                component: Dashboard,
+            },
         ],
     },
 
@@ -93,11 +103,11 @@ const routes = [
         path: "/Fasilitas",
         component: AdminLayout,
         children: [
-        {
-            path: "",
-            name: "admin.Fasilitas",
-            component: Fasilitas,
-        },
+            {
+                path: "",
+                name: "admin.Fasilitas",
+                component: Fasilitas,
+            },
         ],
     },
 
@@ -105,22 +115,22 @@ const routes = [
         path: "/JenisKamar",
         component: AdminLayout,
         children: [
-        {
-            path: "",
-            name: "admin.JenisKamar",
-            component: JenisKamar,
-        },
+            {
+                path: "",
+                name: "admin.JenisKamar",
+                component: JenisKamar,
+            },
         ],
     },
     {
         path: "/Kamar",
         component: AdminLayout,
         children: [
-        {
-            path: "",
-            name: "admin.Kamar",
-            component: Kamar,
-        },
+            {
+                path: "",
+                name: "admin.Kamar",
+                component: Kamar,
+            },
         ],
     },
     // {
