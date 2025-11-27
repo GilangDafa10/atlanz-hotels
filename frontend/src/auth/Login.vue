@@ -13,13 +13,13 @@
         <form @submit.prevent="login" class="space-y-4">
           <!-- Username -->
           <div class="text-left">
-            <label class="text-sm font-medium text-black mb-1 block"> Username / Email </label>
+            <label class="text-sm font-medium text-black mb-1 block"> Email </label>
             <input
               v-model="username"
               type="text"
               required
               class="w-full px-4 py-2 rounded-lg bg-white/90 focus:bg-white border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none"
-              placeholder="Username / Email"
+              placeholder="Email"
             />
           </div>
 
@@ -82,13 +82,32 @@
             </div>
           </div>
 
-          <!-- Button -->
-          <button
-            :disabled="loading"
-            class="w-full mt-1 bg-blue-600 text-white py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 active:scale-95 transition"
-          >
-            {{ loading ? 'Loading...' : 'Login' }}
-          </button>
+          <div class="">
+            <!-- Button -->
+            <button
+              :disabled="loading"
+              class="w-full mt-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 active:scale-95 transition"
+            >
+              {{ loading ? 'Loading...' : 'Login' }}
+            </button>
+            <!-- LOGIN GOOGLE -->
+            <button
+              @click="loginWithGoogle"
+              class="w-full mt-2 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition"
+            >
+              <i class="fa-brands fa-google mr-1"></i>
+              Login with Google
+            </button>
+
+            <!-- LOGIN GITHUB -->
+            <button
+              @click="loginWithGithub"
+              class="w-full mt-2 bg-gray-900 text-white py-2 rounded-lg hover:bg-black transition"
+            >
+              <i class="fa-brands fa-github mr-1"></i>
+              Login with GitHub
+            </button>
+          </div>
         </form>
 
         <p v-if="errorMessage" class="text-red-600 text-sm mt-3">
@@ -108,7 +127,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
 import SuccessLoginModal from '@/components/SuccessLoginModal.vue'
@@ -155,4 +174,29 @@ const login = async () => {
     loading.value = false
   }
 }
+
+const loginWithGoogle = async () => {
+  const res = await axios.get('http://127.0.0.1:8000/api/auth/google/redirect')
+
+  window.location.href = res.data.url
+}
+
+const loginWithGithub = async () => {
+  const res = await axios.get('http://127.0.0.1:8000/api/auth/github/redirect')
+
+  window.location.href = res.data.url
+}
+
+onMounted(() => {
+  const token = router.currentRoute.value.query.token
+
+  // Jika token ada di URL (dari Google atau GitHub)
+  if (token) {
+    localStorage.setItem('token', token)
+    localStorage.setItem('isLoggedIn', 'true')
+
+    // Hapus token dari URL & redirect ke dashboard
+    router.replace('/')
+  }
+})
 </script>

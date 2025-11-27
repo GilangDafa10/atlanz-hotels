@@ -76,14 +76,13 @@
             v-if="showUserMenu"
             class="absolute right-0 mt-3 w-40 bg-white rounded-xl shadow-lg py-2 z-50"
           >
-            <a href="/profile" class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-              >Dashboard</a
-            >
+            <a href="/profile" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Dashboard</a>
             <button
               @click="logout"
-              class="cursor-pointer block text-left w-full px-4 py-2 text-gray-700 hover:bg-gray-100"
+              :disabled="isLoggingOut"
+              class="cursor-pointer block text-left w-full px-4 py-2 text-gray-700 hover:bg-gray-100 disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              Logout
+              {{ isLoggingOut ? 'Logging out...' : 'Logout' }}
             </button>
           </div>
         </li>
@@ -97,11 +96,14 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from 'vue'
+// import { useRouter } from 'vue-router'
 import BookingModal from './ModalBooks.vue'
+import router from '@/router'
 
 const showBooking = ref(false)
 const isLoggedIn = ref(false)
 const showUserMenu = ref(false)
+const isLoggingOut = ref(false)
 
 onMounted(() => {
   isLoggedIn.value = localStorage.getItem('isLoggedIn') === 'true'
@@ -112,9 +114,16 @@ const toggleMenu = () => {
 }
 
 const logout = () => {
-  localStorage.removeItem('token')
-  localStorage.removeItem('isLoggedIn')
-  location.reload()
+  // set processing state, simulate logout process for 2 seconds
+  isLoggingOut.value = true
+
+  setTimeout(() => {
+    localStorage.removeItem('token')
+    localStorage.removeItem('isLoggedIn')
+    isLoggedIn.value = false
+    isLoggingOut.value = false
+    router.push('/login')
+  }, 2000)
 }
 
 const isScrolled = ref(false)
