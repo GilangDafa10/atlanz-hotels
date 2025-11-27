@@ -69,7 +69,7 @@ Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function ()
 
         // USER
         Route::get('/users', [UserController::class, 'index']);
-        Route::get('/users/{id_user}', [UserController::class, 'updateRole']);
+        Route::put('/users/{id_user}', [UserController::class, 'updateRole']);
 
         // ROLE CRUD
         Route::get('/roles', [RoleController::class, 'index']);
