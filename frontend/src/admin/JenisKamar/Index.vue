@@ -117,7 +117,14 @@ const handleCreated = async () => {
 };
 
 const openEditModal = (room) => {
-  currentRoom.value = { ...room };
+  // ✅ REVISI: Mengubah format data agar sesuai dengan yang diharapkan oleh EditModal
+  currentRoom.value = { 
+    id_jenis_kamar: room.id, // ID dibutuhkan untuk URL PUT
+    jenis_kasur: room.name,
+    harga_permalam: room.rawPrice, // Menggunakan harga asli (angka)
+    deskripsi: room.description,
+    url_gambar: room.url_gambar,
+  };
   showEditModal.value = true;
 };
 

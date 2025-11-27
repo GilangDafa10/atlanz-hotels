@@ -49,8 +49,8 @@
             <div class="flex justify-end gap-3 pt-4 border-t mt-4">
               <button type="button" @click="close" class="px-5 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition">Batal</button>
               <button type="submit" :disabled="isLoading" class="px-5 py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition disabled:opacity-50 flex items-center gap-2">
-                 <span v-if="isLoading" class="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
-                 {{ isLoading ? 'Menyimpan...' : 'Simpan Perubahan' }}
+                <span v-if="isLoading" class="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
+                {{ isLoading ? 'Menyimpan...' : 'Simpan Perubahan' }}
               </button>
             </div>
           </form>
@@ -66,7 +66,7 @@ import axios from "axios";
 
 const props = defineProps({
   isOpen: { type: Boolean, default: false },
-  room: { type: Object, default: null },
+  room: { type: Object, default: null }, // Menerima objek 'room' dari index.vue
 });
 
 const emit = defineEmits(["close", "updated"]);
@@ -85,20 +85,36 @@ const isLoading = ref(false);
 
 const API_BASE = "http://127.0.0.1:8000/api";
 
+// ✅ REVISI WATCH: Memastikan properti objek 'r' sesuai dengan yang dikirim dari index.vue
 watch(
   () => props.room,
   (r) => {
-    if (!r) {
-      // Reset logic
+    // Memeriksa jika data room ada dan memiliki ID
+    if (!r || !r.id_jenis_kamar) { 
+      // Reset form jika tidak ada data
+      form.value = {
+        id: null,
+        jenis_kasur: "",
+        harga_permalam: null,
+        deskripsi: "",
+      };
+      // Reset preview/file
+      existingPreview.value = null;
+      newFile.value = null;
+      newPreview.value = null;
       return;
     }
+
+    // ✅ Isi form dengan data yang sudah diformat di index.vue
     form.value.id = r.id_jenis_kamar;
-    form.value.jenis_kasur = r.jenis_kasur;
-    form.value.harga_permalam = r.harga_permalam;
+    form.value.jenis_kasur = r.jenis_kasur || "";
+    form.value.harga_permalam = r.harga_permalam || null;
     form.value.deskripsi = r.deskripsi || "";
-    existingPreview.value = r.url_gambar || null;
+
+    // Set preview gambar
+    existingPreview.value = r.url_gambar ? `${API_BASE}/${r.url_gambar}` : null;
     
-    // Reset new uploads
+    // Reset upload
     newFile.value = null;
     newPreview.value = null;
   },
@@ -113,6 +129,9 @@ const handleFileChange = (e) => {
 };
 
 const close = () => {
+  // Membersihkan input file saat modal ditutup
+  newFile.value = null;
+  newPreview.value = null;
   emit("close");
 };
 
@@ -123,6 +142,10 @@ const submitEdit = async () => {
     if (!token) throw new Error("Token not found.");
 
     const fd = new FormData();
+    // ✅ Method Spoofing
+    fd.append("_method", "PUT"); 
+    
+    // Pastikan field yang dikirim sesuai dengan API backend (misal: Laravel)
     fd.append("jenis_kasur", form.value.jenis_kasur);
     fd.append("harga_permalam", form.value.harga_permalam);
     fd.append("deskripsi", form.value.deskripsi ?? "");
@@ -130,20 +153,23 @@ const submitEdit = async () => {
     if (newFile.value) {
       fd.append("url_gambar", newFile.value);
     }
-
-    // Method spoofing for Laravel PUT
-    await axios.post(`${API_BASE}/jenis-kamar/${form.value.id}?_method=PUT`, fd, {
+    
+    // ✅ Menggunakan POST ke endpoint update
+    await axios.post(`${API_BASE}/jenis-kamar/${form.value.id}`, fd, {
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data",
+        // Penting untuk FormData
+        "Content-Type": "multipart/form-data", 
       },
     });
 
     emit("updated");
     close();
   } catch (err) {
-    console.error("edit error:", err);
-    alert("Gagal mengupdate data.");
+    console.error("edit error:", err.response?.data || err.message || err);
+    // Memberikan pesan error yang lebih detail jika ada dari server
+    const serverMessage = err.response?.data?.message || "Terjadi kesalahan saat menyimpan data.";
+    alert(`Gagal mengupdate data: ${serverMessage}`);
   } finally {
     isLoading.value = false;
   }

@@ -71,6 +71,7 @@
       :is-open="showCreateModal"
       @close="showCreateModal = false"
       @create="addFasilitas"
+      
     />
 
     <EditModal
@@ -114,7 +115,7 @@ const API_URL = 'http://127.0.0.1:8000/api/fasilitas'
 
 // Helper untuk header Auth
 const getAuthHeader = (required = false) => {
-  const token = localStorage.getItem('auth_token') 
+  const token = localStorage.getItem('token') 
   
   if (required && !token) {
     errorMessage.value = 'Aksi ini memerlukan autentikasi. Token tidak ditemukan.'
@@ -137,14 +138,15 @@ const fetchFasilitas = async () => {
   errorMessage.value = '' 
   try {
     const response = await axios.get(API_URL, getAuthHeader(false)) 
+    // Pastikan response.data.data adalah array sesuai struktur API yang dipelajari
     fasilitasList.value = response.data.data 
   } catch (error) {
     console.error('Error fetching fasilitas:', error)
     if (error.response && error.response.status === 404) {
-         fasilitasList.value = [] 
-         errorMessage.value = error.response.data.message || 'Belum ada data fasilitas.'
+        fasilitasList.value = [] 
+        errorMessage.value = error.response.data.message || 'Belum ada data fasilitas.'
     } else {
-         errorMessage.value = 'Gagal mengambil data fasilitas. Cek koneksi Anda/API.'
+        errorMessage.value = 'Gagal mengambil data fasilitas. Cek koneksi Anda/API.'
     }
   } finally {
     loading.value = false
@@ -178,7 +180,7 @@ const updateFasilitas = async (updatedPayload) => {
     const { id_fasilitas, ...dataToUpdate } = updatedPayload;
 
     const url = `${API_URL}/${id_fasilitas}`
-    // Kirim hanya data yang diizinkan oleh fillable di backend (nama_fasilitas, icon_fasilitas)
+    // Kirim hanya data yang diizinkan (nama_fasilitas, icon_fasilitas)
     await axios.put(url, dataToUpdate, getAuthHeader(true))
 
     await fetchFasilitas()
