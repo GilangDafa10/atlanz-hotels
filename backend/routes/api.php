@@ -11,6 +11,7 @@ use App\Http\Controllers\API\DashboardController;
 use App\Http\Controllers\API\FasilitasController;
 use App\Http\Controllers\API\PembayaranController;
 use App\Http\Controllers\API\SocialAuthController;
+use App\Http\Controllers\API\UserController;
 
 // ================================
 // PUBLIC ROUTES
@@ -65,6 +66,10 @@ Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function ()
     // ADMIN ONLY (id_role = 1)
     // ================================
     Route::middleware(['check.role:1'])->group(function () {
+
+        // USER
+        Route::get('/users', [UserController::class, 'index']);
+        Route::get('/users/{id_user}', [UserController::class, 'updateRole']);
 
         // ROLE CRUD
         Route::get('/roles', [RoleController::class, 'index']);
