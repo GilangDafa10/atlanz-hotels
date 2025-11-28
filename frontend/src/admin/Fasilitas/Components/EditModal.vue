@@ -70,23 +70,23 @@ const emit = defineEmits(['close', 'update'])
 const form = ref({
   id_fasilitas: null,
   nama_fasilitas: '',
-  icon_fasilitas: '', // 💡 Inisialisasi field
+  icon_fasilitas: '',
 })
 
-// 🔄 Watcher: Otomatis mengisi form ketika data 'fasilitas' berubah
+// 🔄 Watcher: Otomatis mengisi form ketika data 'fasilitas' berubah/diterima
 watch(() => props.fasilitas, (newFasilitas) => {
   if (newFasilitas) {
     form.value = {
       id_fasilitas: newFasilitas.id_fasilitas,
       nama_fasilitas: newFasilitas.nama_fasilitas,
-      // 💡 PASTIKAN DATA ICON JUGA DIAMBIL
+      // Pastikan data icon juga diambil
       icon_fasilitas: newFasilitas.icon_fasilitas || '', 
     }
   }
 }, { immediate: true })
 
 const submit = () => {
-  // Emit form.value yang kini sudah mencakup icon_fasilitas
+  // Emit form.value yang mencakup id_fasilitas, nama_fasilitas, dan icon_fasilitas
   emit('update', form.value) 
 }
 

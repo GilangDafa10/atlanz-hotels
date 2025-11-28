@@ -99,6 +99,9 @@ const showEditModal = ref(false)
 const showConfirmModal = ref(false)
 const currentKamar = ref(null)
 const currentIdToDelete = ref(null)
+// Tambahkan di bagian state
+const jenisKamarList = ref([])
+const loadingJenisKamar = ref(false)
 
 // --- Konfigurasi API ---
 const API_URL = 'http://127.0.0.1:8000/api/kamar'
@@ -156,6 +159,21 @@ const fetchKamar = async () => {
 onMounted(() => {
   fetchKamar()
 })
+const fetchJenisKamar = async () => {
+  loadingJenisKamar.value = true
+  try {
+    const res = await axios.get('http://127.0.0.1:8000/api/jenis-kamar')
+    jenisKamarList.value = res.data.data
+  } catch (err) {
+    console.error('Gagal fetch jenis kamar:', err)
+  } finally {
+    loadingJenisKamar.value = false
+  }
+}
+onMounted(() => {
+  fetchKamar()
+  fetchJenisKamar() // ✅ Tambahkan ini
+})
 
 // --- CREATE (POST) ---
 const addKamar = async (newKamarPayload) => {
@@ -200,8 +218,25 @@ const updateKamar = async (updatedPayload) => {
     const url = `${API_URL}/${updatedPayload.id_kamar}`
     await axios.put(url, updatedPayload, getAuthHeader())
 
-    await fetchKamar()
+    // ✅ UPDATE DATA LOKAL SECARA LANGSUNG
+    const index = kamarList.value.findIndex(k => k.id === updatedPayload.id_kamar)
+    if (index !== -1) {
+      const updatedType = jenisKamarList.value.find(j => j.id_jenis_kamar === updatedPayload.id_jenis_kamar)?.jenis_kasur || '-'
+
+      kamarList.value[index] = {
+        id: updatedPayload.id_kamar,
+        number: updatedPayload.nomor_kamar,
+        type: updatedType,
+        originalData: {
+          ...kamarList.value[index].originalData,
+          nomor_kamar: updatedPayload.nomor_kamar,
+          id_jenis_kamar: updatedPayload.id_jenis_kamar
+        }
+      }
+    }
+
     showEditModal.value = false
+    // fetchKamar() // Opsional, tapi tidak perlu jika sudah update langsung
   } catch (error) {
     console.error('Gagal update kamar:', error)
     alert('Gagal memperbarui kamar. Cek input atau token.')
