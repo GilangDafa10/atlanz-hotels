@@ -10,6 +10,7 @@ import Dashboard from "../admin/Dashboard/Dashboard.vue";
 import Fasilitas from "../admin/Fasilitas/Index.vue";
 import JenisKamar from "../admin/JenisKamar/Index.vue";
 import Kamar from "../admin/Kamar/Index.vue";
+import BookingDetails from "../admin/BookingDetails/Index.vue"
 import AdditionalServices from "../admin/AdditionalServices/Index.vue";
 import AddService from "@/pages/AddService.vue";
 import Profile from "@/pages/Profil.vue";
@@ -156,6 +157,27 @@ const routes = [
             },
         ],
     },
+    {
+        path: "/booking-details",  // ← lowercase
+        component: AdminLayout,
+        children: [
+            {
+                path: "",
+                name: "admin.BookingDetails",
+                component: BookingDetails,
+            },
+        ],
+    },
+    // {
+    //     path: "/about",
+    //     name: "about",
+    //     component: About,
+    // },
+    // {
+    //     path: "/mobil/:id",
+    //     name: "detail-mobil",
+    //     component: DetailMobil,
+    // }
 ];
 
 const router = createRouter({
