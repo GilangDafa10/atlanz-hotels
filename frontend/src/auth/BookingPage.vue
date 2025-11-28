@@ -207,17 +207,25 @@ onMounted(async () => {
 
     const serviceArray = route.query.service_ids ? JSON.parse(route.query.service_ids) : []
 
-    const res = await axios.get('http://127.0.0.1:8000/api/booking', {
-      params: {
-        jenis_kamar_id: route.query.jenis_kamar_id,
-        tgl_checkin: route.query.check_in,
-        tgl_checkout: route.query.check_out,
-        jumlah: route.query.rooms,
-        service_ids: serviceArray,
+    const res = await axios.get(
+      `http://127.0.0.1:8000/api/jenis-kamar/${route.query.jenis_kamar_id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+
+        params: {
+          jenis_kamar_id: route.query.jenis_kamar_id,
+          tgl_checkin: route.query.check_in,
+          tgl_checkout: route.query.check_out,
+          jumlah: route.query.rooms,
+          service_ids: serviceArray,
+        },
       },
-    })
+    )
 
     bookingData.value = res.data.data
+    console.log('Preview booking data:', bookingData.value)
   } catch (err) {
     console.error('Preview booking error:', err.response?.data || err)
   } finally {

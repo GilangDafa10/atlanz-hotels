@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
-
+import api from "@/utils/api";
 // Import pages
 import Home from "../pages/Home.vue";
 import Rooms from "../pages/Rooms.vue";
 // import Booking from "../pages/Booking.vue";
-import Booking from "../auth/BookingPage.vue";
+// import Booking from "../auth/BookingPage.vue";
 import AdminLayout from "../layouts/AdminLayouts.vue";
 import Dashboard from "../admin/Dashboard/Dashboard.vue";
 import Fasilitas from "../admin/Fasilitas/Index.vue";
@@ -36,26 +36,31 @@ const routes = [
     {
         path: "/cari-kamar",
         name: "cari-kamar",
+        meta: { requiresAuth: true },
         component: RoomsSelection,
     },
     {
         path: "/booking",
         name: "booking",
+        meta: { requiresAuth: true },
         component: BookingPage,
     },
     {
         path: "/AddService",
         name: "addservice",
+        meta: { requiresAuth: true },
         component: AddService,
     },
     {
         path: '/payment',
         name: 'midtrans-payment',
+        meta: { requiresAuth: true },
         component: CreateInvoice,
     },
     {
         path: "/Profile",
         name: "profile",
+        meta: { requiresAuth: true },
         component: Profile,
     },
     {
@@ -83,14 +88,16 @@ const routes = [
         name: "confirmation",
         component: Confirmation,
     },
-    {
-        path: "/BookingPage",
-        name: "bookingpage",
-        component: BookingPage,
-    },
+    // {
+    //     path: "/BookingPage",
+    //     name: "bookingpage",
+    //     meta: { requiresAuth: true },
+    //     component: BookingPage,
+    // },
     {
         path: "/dashboard",
         component: AdminLayout,
+        meta: { requiresAdmin: true },
         children: [
             {
                 path: "",
@@ -103,6 +110,7 @@ const routes = [
     {
         path: "/Fasilitas",
         component: AdminLayout,
+        meta: { requiresAdmin: true },
         children: [
             {
                 path: "",
@@ -115,6 +123,7 @@ const routes = [
     {
         path: "/JenisKamar",
         component: AdminLayout,
+        meta: { requiresAdmin: true },
         children: [
             {
                 path: "",
@@ -126,6 +135,7 @@ const routes = [
     {
         path: "/Kamar",
         component: AdminLayout,
+        meta: { requiresAdmin: true },
         children: [
             {
                 path: "",
@@ -137,29 +147,55 @@ const routes = [
     {
         path: "/AdditionalServices",
         component: AdminLayout,
+        meta: { requiresAdmin: true },
         children: [
-        {
-            path: "",
-            name: "admin.AdditionalServices",
-            component: AdditionalServices,
-        },
+            {
+                path: "",
+                name: "admin.AdditionalServices",
+                component: AdditionalServices,
+            },
         ],
     },
-    // {
-    //     path: "/about",
-    //     name: "about",
-    //     component: About,
-    // },
-    // {
-    //     path: "/mobil/:id",
-    //     name: "detail-mobil",
-    //     component: DetailMobil,
-    // }
 ];
 
 const router = createRouter({
     history: createWebHistory(),
     routes,
 });
+
+
+let user = null
+
+router.beforeEach(async (to, from, next) => {
+    const token = localStorage.getItem('token')
+
+    // 1️⃣ Jika halaman butuh login tapi tidak ada token → langsung ke login
+    if (to.meta.requiresAuth && !token) {
+        return next('/login')
+    }
+
+    // 2️⃣ Kalau ada token tapi user belum dimuat → panggil /me dulu
+    if (token && !user) {
+        try {
+            const res = await api.get('/me')
+            user = res.data.data
+        } catch (e) {
+            localStorage.clear()
+            return next('/login')
+        }
+    }
+
+    // 3️⃣ Pastikan admin page sesuai role
+    if (to.meta.requiresAdmin && user?.id_role !== 1) {
+        return next('/')
+    }
+
+    // 4️⃣ Kalau sudah login → tidak boleh masuk login
+    if (to.name === 'login' && token) {
+        return next('/')
+    }
+
+    next()
+})
 
 export default router;

@@ -42,7 +42,7 @@
           >
         </li>
 
-        <li v-if="isLoggedIn">
+        <li v-if="isLoggedIn && idRole == 2">
           <button
             @click="showBooking = true"
             :class="linkClass"
@@ -76,7 +76,9 @@
             v-if="showUserMenu"
             class="absolute right-0 mt-3 w-40 bg-white rounded-xl shadow-lg py-2 z-50"
           >
-            <a href="/profile" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Dashboard</a>
+            <a :href="dashboardRoute" class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+              >Dashboard</a
+            >
             <button
               @click="logout"
               :disabled="isLoggingOut"
@@ -104,9 +106,17 @@ const showBooking = ref(false)
 const isLoggedIn = ref(false)
 const showUserMenu = ref(false)
 const isLoggingOut = ref(false)
+const idRole = ref(null)
 
 onMounted(() => {
   isLoggedIn.value = localStorage.getItem('isLoggedIn') === 'true'
+  idRole.value = localStorage.getItem('role')
+})
+
+const dashboardRoute = computed(() => {
+  if (idRole.value == 1) return '/dashboard'
+  if (idRole.value == 2) return '/profile'
+  return '/profile' // fallback
 })
 
 const toggleMenu = () => {
