@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\FasilitasJenisKamarResource;
 
 class JenisKamarResource extends JsonResource
 {
@@ -15,6 +16,7 @@ class JenisKamarResource extends JsonResource
             'harga_permalam' => $this->harga_permalam,
             'deskripsi'      => $this->deskripsi,
             'url_gambar'     => $this->url_gambar,
+            'fasilitas_jenis_kamar'    => new FasilitasJenisKamarResource($this->id_fasilitas_jenis_kamar),
         ];
     }
 }

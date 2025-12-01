@@ -17,12 +17,6 @@ class FasilitasJenisKamarResource extends JsonResource
             'fasilitas'      => $this->whenLoaded('fasilitas', function () {
                 return new FasilitasResource($this->fasilitas);
             }),
-            'jenis_kamar'    => $this->whenLoaded('jenisKamar', function () {
-                return [
-                    'id_jenis_kamar' => $this->jenisKamar->id_jenis_kamar,
-                    'jenis_kasur' => $this->jenisKamar->jenis_kasur,
-                ];
-            }),
         ];
     }
 }
