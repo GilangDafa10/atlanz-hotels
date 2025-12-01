@@ -14,7 +14,7 @@ class JenisKamarController extends Controller
      */
     public function index()
     {
-        $jenisKamar = JenisKamar::all();
+        $jenisKamar = JenisKamar::with('fasilitas')->get();
 
         if ($jenisKamar->isEmpty()) {
             return response()->json([
@@ -70,7 +70,9 @@ class JenisKamarController extends Controller
      */
     public function show($id_jenis_kamar)
     {
-        $jenis = JenisKamar::where('id_jenis_kamar', $id_jenis_kamar)->first();
+        $jenis = JenisKamar::with('fasilitas')
+        ->where('id_jenis_kamar', $id_jenis_kamar)
+        ->first();
 
         if (!$jenis) {
             return response()->json([

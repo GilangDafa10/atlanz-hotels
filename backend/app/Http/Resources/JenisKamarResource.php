@@ -16,7 +16,9 @@ class JenisKamarResource extends JsonResource
             'harga_permalam' => $this->harga_permalam,
             'deskripsi'      => $this->deskripsi,
             'url_gambar'     => $this->url_gambar,
-            'fasilitas_jenis_kamar'    => new FasilitasJenisKamarResource($this->id_fasilitas_jenis_kamar),
+            'fasilitas' => FasilitasResource::collection(
+                $this->whenLoaded('fasilitas')
+            ),
         ];
     }
 }
