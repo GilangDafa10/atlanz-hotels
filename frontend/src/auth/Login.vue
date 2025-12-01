@@ -173,7 +173,7 @@ const login = async () => {
     showSuccessModal.value = true
 
     setTimeout(async () => {
-      await router.push(role == 1 ? '/dashboard' : '/')
+      await router.push(role == 1 ? '/admin/dashboard' : '/')
     }, 1500)
   } catch (err) {
     errorMessage.value = err.response?.data?.message || 'Login gagal!'

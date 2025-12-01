@@ -5,7 +5,7 @@ import router from "./router";
 import initSessionManager from './utils/sessionManager';
 
 initSessionManager({
-    idleLimitMinutes: 5,
+    idleLimitMinutes: 10,
     redirectTo: "/login",
 })
 createApp(App).use(router).mount('#app')
