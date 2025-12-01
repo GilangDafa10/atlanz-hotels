@@ -129,6 +129,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
+import api from '@/utils/api' // ← Tambahkan ini
 import { useRouter } from 'vue-router'
 import SuccessLoginModal from '@/components/SuccessLoginModal.vue'
 
@@ -139,7 +140,6 @@ const password = ref('')
 const showPassword = ref(false)
 const loading = ref(false)
 const errorMessage = ref(null)
-
 const showSuccessModal = ref(false)
 
 const togglePassword = () => {
@@ -156,18 +156,25 @@ const login = async () => {
       password: password.value,
     }
 
+    // 1️⃣ LOGIN
     const res = await axios.post('http://127.0.0.1:8000/api/login', payload)
 
-    localStorage.setItem('token', res.data.data.token)
+    const token = res.data.data.token
+    localStorage.setItem('token', token)
     localStorage.setItem('isLoggedIn', 'true')
+    localStorage.setItem('lastActivity', Date.now())
 
-    // 1️⃣ Tampilkan modal sukses login
+    // 2️⃣ GET ROLE MENGGUNAKAN AXIOS INSTANCE
+    const me = await api.get('/me')
+    const role = me.data.data.id_role
+    localStorage.setItem('role', role)
+
+    // 3️⃣ SUCCESS MODAL
     showSuccessModal.value = true
 
-    // 2️⃣ Setelah 3 detik → redirect ke /
-    setTimeout(() => {
-      router.push('/')
-    }, 3000)
+    setTimeout(async () => {
+      await router.push(role == 1 ? '/admin/dashboard' : '/')
+    }, 1500)
   } catch (err) {
     errorMessage.value = err.response?.data?.message || 'Login gagal!'
   } finally {
@@ -187,16 +194,20 @@ const loginWithGithub = async () => {
   window.location.href = res.data.url
 }
 
-onMounted(() => {
+onMounted(async () => {
   const token = router.currentRoute.value.query.token
 
-  // Jika token ada di URL (dari Google atau GitHub)
   if (token) {
     localStorage.setItem('token', token)
     localStorage.setItem('isLoggedIn', 'true')
+    localStorage.setItem('lastActivity', Date.now())
 
-    // Hapus token dari URL & redirect ke dashboard
-    router.replace('/')
+    // Fetch role setelah login google/github
+    const me = await api.get('/me')
+    const role = me.data.data.id_role
+    localStorage.setItem('role', role)
+
+    router.replace(role == 1 ? '/dashboard' : '/')
   }
 })
 </script>
