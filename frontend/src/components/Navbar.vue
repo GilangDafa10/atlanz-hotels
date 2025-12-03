@@ -68,7 +68,7 @@
           </a>
         </li>
 
-        <li v-if="isLoggedIn && idRole == 2">
+        <li v-if="isLoggedIn && idRole == 2 && !isInBookingPage">
           <button
             @click="showBooking = true"
             class="cursor-pointer text-white font-medium text-[16px] hover:underline underline-offset-[6px] transition"
@@ -147,7 +147,7 @@
             </a>
           </li>
 
-          <li v-if="isLoggedIn && idRole == 2">
+          <li v-if="isLoggedIn && idRole == 2 && !isInBookingPage">
             <button
               @click="openBookingModal"
               class="w-full text-left py-2 px-4 text-white hover:bg-white/10 rounded-lg transition"
@@ -194,8 +194,10 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
+import { useRoute } from 'vue-router'
 import BookingModal from './ModalBooks.vue'
 
+const route = useRoute()
 const showBooking = ref(false)
 const isLoggedIn = ref(false)
 const showUserMenu = ref(false)
@@ -211,6 +213,12 @@ const dashboardRoute = computed(() => {
   if (idRole.value == 1) return '/admin/dashboard'
   if (idRole.value == 2) return '/profile'
   return '/profile' // fallback
+})
+
+// Cek apakah sedang di halaman booking
+const isInBookingPage = computed(() => {
+  const currentPath = route.path
+  return currentPath === '/booking' || currentPath === '/room-selection'
 })
 
 const toggleMenu = () => {

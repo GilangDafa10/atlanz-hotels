@@ -15,6 +15,7 @@
       <h1 class="text-[45px] md:text-7xl font-bold tracking-wider mt-2">ATLANZ HOTEL</h1>
 
       <button
+        @click="openBookingModal"
         class="mt-6 md:mt-8 bg-yellow-500 px-6 py-3 rounded-md font-semibold shadow-md hover:bg-yellow-600 transition"
       >
         BOOK NOW
@@ -27,8 +28,38 @@
       </div>
     </div>
   </section>
+  <!-- BOOKING MODAL -->
+  <BookingModal :show="showBooking" @close="showBooking = false" />
 </template>
 
 <script setup>
 import heroImage from '@/assets/heroSection.png'
+import BookingModal from '@/components/ModalBooks.vue'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+const showBooking = ref(false)
+
+const openBookingModal = () => {
+  // Cek apakah user sudah login
+  const isLoggedIn = localStorage.getItem('isLoggedIn')
+  const userRole = localStorage.getItem('role')
+
+  if (!isLoggedIn || isLoggedIn !== 'true') {
+    // Jika belum login, arahkan ke halaman login
+    alert('Silakan login terlebih dahulu untuk melakukan booking.')
+    router.push('/login')
+    return
+  }
+
+  // Cek apakah role user adalah 2 (bukan admin)
+  if (userRole !== '2') {
+    alert('Hanya user yang dapat melakukan booking. Admin tidak dapat mengakses fitur ini.')
+    return
+  }
+
+  // Jika sudah login dan role = 2, buka modal
+  showBooking.value = true
+}
 </script>

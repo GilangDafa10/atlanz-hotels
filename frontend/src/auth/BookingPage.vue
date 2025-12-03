@@ -312,32 +312,33 @@ onMounted(async () => {
 
     const serviceArray = route.query.service_ids ? JSON.parse(route.query.service_ids) : []
 
-    const [roomRes, fasilitasRes] = await Promise.all([
-      axios.get(`http://127.0.0.1:8000/api/jenis-kamar/${jenis_kamar_id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-        params: {
-          tgl_checkin: check_in,
-          tgl_checkout: check_out,
-          jumlah: rooms,
-          service_ids: serviceArray,
-        },
-      }),
-      axios.get('http://127.0.0.1:8000/api/fasilitas'),
-    ])
+    const roomRes = await axios.get(`http://127.0.0.1:8000/api/jenis-kamar/${jenis_kamar_id}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+      params: {
+        tgl_checkin: check_in,
+        tgl_checkout: check_out,
+        jumlah: rooms,
+        service_ids: serviceArray,
+      },
+    })
 
     const roomData = roomRes.data.data
-    const fasilitasData = fasilitasRes.data?.data || fasilitasRes.data
 
     const nights = Math.ceil((new Date(check_out) - new Date(check_in)) / (1000 * 60 * 60 * 24))
     const roomCount = Number(rooms) || 1
     const subtotal = (roomData.harga_permalam || 0) * nights * roomCount
 
     bookingData.value = {
-      room: roomData,
-      fasilitas: fasilitasData,
-      subtotal: subtotal,
+      room: {
+        ...roomData,
+        url_gambar: roomData.url_gambar
+          ? `http://127.0.0.1:8000/storage/${roomData.url_gambar}`
+          : '/images/default-room.jpg',
+      },
+      fasilitas: roomData.fasilitas || [], // <---- FIX
+      subtotal,
     }
 
     await fetchServices()
@@ -347,8 +348,6 @@ onMounted(async () => {
         serviceArray.includes(s.id_service),
       )
     }
-
-    console.log('Booking Data:', bookingData.value)
   } catch (err) {
     console.error('Error:', err)
     alert('Gagal memuat data preview.')

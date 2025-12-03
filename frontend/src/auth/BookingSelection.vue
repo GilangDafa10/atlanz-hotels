@@ -74,7 +74,16 @@ onMounted(async () => {
   })
 
   // Jika API Anda mengembalikan data.data
-  jenis_kamar.value = res.data.data ?? res.data
+  const rawData = res.data.data ?? res.data
+
+  // Transform URL gambar dengan menambahkan base URL
+  jenis_kamar.value = rawData.map((room) => ({
+    ...room,
+    url_gambar: room.url_gambar
+      ? `http://127.0.0.1:8000/storage/${room.url_gambar}`
+      : 'https://via.placeholder.com/400x250?text=No+Image',
+  }))
+
   console.log(jenis_kamar.value)
 })
 
