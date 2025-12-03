@@ -1,7 +1,11 @@
 <template>
-  <Teleport to="body">
-    <div v-if="isOpen" class="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] transition-opacity duration-300" @click.self="close">
-      <div class="bg-white rounded-lg shadow-xl max-w-lg w-full p-6 transition-transform duration-300">
+  <Teleport to="body">
+    <div 
+        v-if="isOpen" 
+        class="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] transition-opacity duration-300 backdrop-blur-sm" 
+        @click.self="close"
+    >
+      <div class="bg-white rounded-lg shadow-xl max-w-lg w-full p-6 transition-transform duration-300">
         <div class="flex justify-between items-center mb-4 border-b pb-3">
           <h3 class="text-xl font-bold">Tambah Fasilitas Baru</h3>
           <button @click="close" class="text-gray-500 hover:text-gray-700 text-xl">&times;</button>
@@ -41,7 +45,8 @@
             </button>
             <button
               type="submit"
-              class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition disabled:opacity-50 flex items-center gap-2"
+              class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition disabled:opacity-50 flex items-center gap-2"
+              
               :disabled="isLoading"
             >
               Tambah

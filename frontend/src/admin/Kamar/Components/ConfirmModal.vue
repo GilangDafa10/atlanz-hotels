@@ -1,6 +1,10 @@
 <template>
-  <div v-if="isOpen" class="fixed inset-0 bg-black/50  flex items-center justify-center z-50 transition-opacity duration-300" :class="{ 'opacity-0': !isOpen, 'opacity-100': isOpen }">
-    <div class="bg-white rounded-lg shadow-xl max-w-lg w-full p-6 transition-transform duration-300" :class="{ 'scale-95': !isOpen, 'scale-100': isOpen }">
+  <div 
+    v-if="isOpen" 
+    class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 transition-opacity duration-300 backdrop-blur-sm" 
+    :class="{ 'opacity-0': !isOpen, 'opacity-100': isOpen }"
+>
+    <div class="bg-white rounded-lg shadow-xl max-w-lg w-full p-6 transition-transform duration-300" :class="{ 'scale-95': !isOpen, 'scale-100': isOpen }">
       <!-- Header -->
       <div class="flex justify-between items-center mb-4">
         <h3 class="text-xl font-bold">Konfirmasi Hapus</h3>
