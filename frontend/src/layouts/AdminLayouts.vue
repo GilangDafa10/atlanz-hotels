@@ -17,7 +17,7 @@
     >
       <div class="flex items-center justify-between mb-10">
         <h1 class="text-4xl font-bold text-white tracking-wide ml-3">ATLANZ</h1>
-        <button
+        <!-- <button
           @click="showSidebar = false"
           class="lg:hidden text-white p-2 hover:bg-white/10 rounded"
           aria-label="Close menu"
@@ -30,7 +30,7 @@
               d="M6 18L18 6M6 6l12 12"
             />
           </svg>
-        </button>
+        </button> -->
       </div>
 
       <nav class="space-y-2">
@@ -39,10 +39,9 @@
           :key="item.name"
           :to="item.to"
           @click="closeSidebarOnMobile"
-          class="flex items-center box-content gap-3 px-4 py-3 w-full rounded-l-xl rounded-r-none font-medium transition text-sm mr-[-1.25rem]"
+          class="flex items-center box-content gap-3 px-4 py-3 w-full rounded-l-xl rounded-r-none font-medium transition text-sm mr-[-1.25rem] hover:bg-[#f3f7fc] hover:text-[#0d3b66]"
           :class="{
-            'bg-[#f3f7fc] text-[#0d3b66]': $route.path.startsWith(item.to),
-            'hover:bg-[#f3f7fc] hover:text-[#0d3b66]': !$route.path.startsWith(item.to),
+            'bg-[#f3f7fc] text-[#0d3b66]': isActiveRoute(item.to),
           }"
         >
           <component :is="item.icon" class="w-5 h-5" />
@@ -134,6 +133,16 @@ const router = useRouter()
 const showMenu = ref(false)
 const showSidebar = ref(false)
 
+const isActiveRoute = (routeTo) => {
+  if (typeof routeTo === 'string') {
+    return router.currentRoute.value.path.startsWith(routeTo)
+  }
+  if (routeTo.name) {
+    return router.currentRoute.value.name === routeTo.name
+  }
+  return false
+}
+
 const toggleMenu = () => {
   showMenu.value = !showMenu.value
 }
@@ -205,7 +214,7 @@ const menu = [
   { name: 'Additional Services', to: { name: 'admin.services' }, icon: Package },
   { name: 'Users', to: { name: 'admin.users' }, icon: Users },
   { name: 'Booking Details', to: { name: 'admin.booking.details' }, icon: NotebookPen },
-  { name: 'Help', to: '/help', icon: HelpCircle }, // tetap pakai path jika tidak di bawah admin
+  // { name: 'Help', to: '/help', icon: HelpCircle }, // tetap pakai path jika tidak di bawah admin
 ]
 </script>
 

@@ -1,5 +1,7 @@
 <template>
-  <div class="group bg-white rounded-2xl shadow-sm hover:shadow-xl border border-gray-100 overflow-hidden transition-all duration-300 flex flex-col h-full">
+  <div
+    class="group bg-white rounded-2xl shadow-sm hover:shadow-xl border border-gray-100 overflow-hidden transition-all duration-300 flex flex-col h-full"
+  >
     <div class="relative h-56 overflow-hidden bg-gray-100">
       <img
         :src="imageUrl"
@@ -7,8 +9,10 @@
         class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         @error="useFallbackImage"
       />
-      
-      <div class="absolute top-3 right-3 bg-white/90 backdrop-blur px-3 py-1 rounded-full shadow-sm text-sm font-bold text-blue-600">
+
+      <div
+        class="absolute top-3 right-3 bg-white/90 backdrop-blur px-3 py-1 rounded-full shadow-sm text-sm font-bold text-blue-600"
+      >
         {{ room.price }}
       </div>
     </div>
@@ -17,7 +21,7 @@
       <h3 class="text-xl font-bold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors">
         {{ room.name }}
       </h3>
-      
+
       <p class="text-gray-500 text-sm mb-4 line-clamp-3 flex-grow">
         {{ room.description || 'Tidak ada deskripsi tersedia.' }}
       </p>
@@ -42,25 +46,25 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed } from 'vue'
 
 const props = defineProps({
   room: { type: Object, required: true },
-});
+})
 
 // LOGIKA UTAMA DISINI
 const imageUrl = computed(() => {
   // Jika ada url_gambar, gabungkan dengan domain
   if (props.room.url_gambar) {
-    return `http://127.0.0.1:8000/storage/${props.room.url_gambar}`;
+    return `http://127.0.0.1:8000/storage/${props.room.url_gambar}`
   }
   // Jika null/kosong, pakai placeholder
-  return "https://via.placeholder.com/400x250?text=No+Image";
-});
+  return 'https://via.placeholder.com/400x250?text=No+Image'
+})
 
 const useFallbackImage = (e) => {
-  e.target.src = "https://via.placeholder.com/400x250?text=No+Image";
-};
+  e.target.src = 'https://via.placeholder.com/400x250?text=No+Image'
+}
 </script>
 
 <style scoped>
