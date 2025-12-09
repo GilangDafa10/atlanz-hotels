@@ -37,7 +37,7 @@ Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function ()
     // ROUTE UNTUK SEMUA ROLE (Admin & User)
     // ============================================
     Route::get('/me', [AuthController::class, 'me']);
-    Route::put('/profile/{id}', [AuthController::class, 'update']);
+    Route::put('/profile/{id}', [UserController::class, 'update']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
     // ========== READ ONLY (Admin & User) ==========
