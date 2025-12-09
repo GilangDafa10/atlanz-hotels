@@ -106,7 +106,7 @@
                     'px-3 py-1 rounded-full text-xs font-semibold inline-block',
                     booking.status === 'Confirmed'
                       ? 'bg-blue-100 text-blue-700'
-                      : booking.status === 'Completed'
+                      : booking.status === 'Berhasil'
                         ? 'bg-green-100 text-green-700'
                         : booking.status === 'Pending'
                           ? 'bg-yellow-100 text-yellow-700'
@@ -370,14 +370,31 @@ const formatDate = (date) =>
   })
 
 const mapStatus = (s) => {
+  if (!s) return 'Unknown'
+
+  const status = s.toLowerCase()
+
   const map = {
-    pending: 'Pending',
-    confirmed: 'Confirmed',
-    completed: 'Completed',
-    cancelled: 'Cancelled',
+    'pending': 'Pending',
+    'menunggu pembayaran': 'Pending',
+    'tertunda': 'Pending',
+
+    'confirmed': 'Confirmed',
+    'dikonfirmasi': 'Confirmed',
+
+    'berhasil': 'Berhasil',
+    'success': 'Berhasil',
+    'completed': 'Berhasil',
+
+    'cancelled': 'Cancelled',
+    'dibatalkan': 'Cancelled',
+
+    'gagal': 'Gagal',
   }
-  return map[s?.toLowerCase()] || 'Pending'
+
+  return map[status] || s
 }
+
 
 const mapBookingData = (data) => {
   return data.map((b) => ({
