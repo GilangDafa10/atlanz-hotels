@@ -39,10 +39,7 @@ class KamarController extends Controller
     {
         $validated = $request->validated();
 
-        $kamar = Kamar::create([
-            'id_jenis_kamar' => $validated['id_jenis_kamar'],
-            'nomor_kamar'    => $validated['nomor_kamar'],
-        ]);
+        $kamar = Kamar::create($validated);
 
         if (!$kamar) {
             return response()->json([

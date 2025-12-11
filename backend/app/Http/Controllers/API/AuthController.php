@@ -10,6 +10,7 @@ use App\Otp\UserRegistrationOtp;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use SadiqSalau\LaravelOtp\OtpBroker;
 use SadiqSalau\LaravelOtp\Facades\Otp;
 use App\Http\Requests\UserStoreRequest;
@@ -137,11 +138,50 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+        // TERIMA token dari dua kemungkinan nama field (frontend bisa kirim 'recaptcha_token' atau 'g-recaptcha-response')
+        $token = $request->input('recaptcha_token') ?? $request->input('g-recaptcha-response');
+
+        // Validasi dasar
         $request->validate([
             'email'    => 'required|email',
-            'password' => 'required'
+            'password' => 'required',
         ]);
 
+        // Pastikan token ada
+        if (!$token) {
+            return response()->json([
+                'status' => false,
+                'message' => 'ReCAPTCHA token tidak ditemukan. Silakan centang captcha.'
+            ], 422);
+        }
+
+        // VALIDASI TOKEN KE GOOGLE
+        try {
+            $response = Http::asForm()->post(
+                'https://www.google.com/recaptcha/api/siteverify',
+                [
+                    'secret'   => env('CAPTCHA_SECRET'), // pastikan .env backend punya CAPTCHA_SECRET
+                    'response' => $token,
+                    // 'remoteip' => $request->ip(), // opsional
+                ]
+            );
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Gagal memverifikasi ReCAPTCHA: '.$e->getMessage()
+            ], 500);
+        }
+
+        $body = $response->json();
+
+        if (empty($body) || !isset($body['success']) || $body['success'] !== true) {
+            return response()->json([
+                'status' => false,
+                'message' => 'ReCAPTCHA tidak valid.'
+            ], 422);
+        }
+
+        // LOGIN BIASA
         $user = User::with('role')->where('email', $request->email)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
