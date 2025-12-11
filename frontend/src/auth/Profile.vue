@@ -38,7 +38,7 @@
           </svg>
         </button>
 
-        <!-- Mobile Dropdown Menu -->
+        <!-- Dropdown -->
         <div v-if="showSidebar" class="mt-2 bg-white rounded-lg shadow-lg p-4 space-y-2">
           <div
             class="flex items-center gap-3 px-4 py-3 rounded cursor-pointer transition"
@@ -79,14 +79,10 @@
         </div>
       </div>
 
-      <!-- Desktop Layout -->
       <div class="flex flex-col lg:flex-row gap-6 lg:gap-8">
-        <!-- SIDEBAR (Desktop Only) -->
-        <div
-          class="hidden lg:block w-full lg:w-80 bg-white rounded-lg shadow-lg p-6 h-fit lg:my-10"
-        >
+        <!-- Sidebar -->
+        <div class="hidden lg:block w-full lg:w-80 bg-white rounded-lg shadow-lg p-6 h-fit lg:my-10">
           <div class="space-y-3">
-            <!-- TAB : PROFILE -->
             <div
               class="flex items-center gap-3 px-4 py-3 rounded cursor-pointer transition"
               :class="
@@ -106,7 +102,7 @@
               </svg>
               <span class="text-sm font-semibold">My Profile</span>
             </div>
-            <!-- TAB : RESERVATION -->
+
             <div
               class="flex items-center gap-3 px-4 py-3 rounded cursor-pointer transition"
               :class="
@@ -129,365 +125,187 @@
           </div>
         </div>
 
-        <!-- RIGHT SIDE CONTENT -->
+        <!-- Main Content -->
         <div class="flex-1 bg-white rounded-lg shadow-lg p-4 md:p-6 lg:p-8 lg:my-10">
           <!-- PROFILE TAB -->
           <div v-if="activeTab === 'profile'">
-            <div class="mb-8">
-              <h1 class="text-2xl font-bold text-gray-800 mb-2">My Profile</h1>
+            <div class="mb-8 flex justify-between items-center">
+              <h1 class="text-2xl font-bold text-gray-800">My Profile</h1>
+
+              <!-- Edit Button -->
+              <button
+                v-if="!isEditing"
+                @click="startEdit"
+                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+              >
+                Edit Profile
+              </button>
             </div>
 
-            <!-- User -->
+            <!-- NAME -->
             <div class="mb-8">
               <h2 class="text-gray-600 text-sm font-semibold mb-4 tracking-wide">User</h2>
-              <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
-                <svg
-                  class="w-5 h-5 text-gray-400 flex-shrink-0"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                  ></path>
-                </svg>
-                <div class="flex-1 w-full">
+              <div class="flex items-start gap-4">
+                <div class="flex-1">
                   <label class="text-gray-500 text-xs block mb-1">Name</label>
-                  <span class="text-gray-800 font-medium break-words">{{ name }}</span>
+
+                  <!-- VIEW -->
+                  <span v-if="!isEditing" class="text-gray-800 font-medium">{{ name }}</span>
+
+                  <!-- EDIT -->
+                  <input
+                    v-else
+                    v-model="formProfile.name"
+                    type="text"
+                    class="w-full border rounded-lg px-3 py-2 text-sm"
+                  />
+
                   <div class="border-b border-gray-300 mt-2"></div>
                 </div>
               </div>
             </div>
 
-            <!-- Contacts -->
-            <div>
+            <!-- EMAIL -->
+            <div class="mb-8">
               <h2 class="text-gray-600 text-sm font-semibold mb-4 tracking-wide">Contacts</h2>
               <div class="space-y-4">
-                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
-                  <svg
-                    class="w-5 h-5 text-gray-400 flex-shrink-0"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                    ></path>
-                  </svg>
-                  <div class="flex-1 w-full">
-                    <label class="text-gray-500 text-xs block mb-1">Email</label>
-                    <span class="text-gray-800 font-medium break-all">{{ email }}</span>
-                    <div class="border-b border-gray-300 mt-2"></div>
-                  </div>
+
+                <!-- EMAIL -->
+                <div>
+                  <label class="text-gray-500 text-xs block mb-1">Email</label>
+
+                  <span v-if="!isEditing" class="text-gray-800 font-medium break-all">{{ email }}</span>
+
+                  <input
+                    v-else
+                    v-model="formProfile.email"
+                    type="email"
+                    class="w-full border rounded-lg px-3 py-2 text-sm"
+                  />
+
+                  <div class="border-b border-gray-300 mt-2"></div>
                 </div>
-                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
-                  <svg
-                    class="w-5 h-5 text-gray-400 flex-shrink-0"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                    ></path>
-                  </svg>
-                  <div class="flex-1 w-full">
-                    <label class="text-gray-500 text-xs block mb-1">Mobile or Cell Phone</label>
-                    <span class="text-gray-800 font-medium">{{ no_hp }}</span>
-                    <div class="border-b border-gray-300 mt-2"></div>
-                  </div>
+
+                <!-- ALAMAT -->
+                <div>
+                  <label class="text-gray-500 text-xs block mb-1">Alamat</label>
+
+                  <span v-if="!isEditing" class="text-gray-800 font-medium">{{ alamat }}</span>
+
+                  <input
+                    v-else
+                    v-model="formProfile.alamat"
+                    type="text"
+                    class="w-full border rounded-lg px-3 py-2 text-sm"
+                  />
+
+                  <div class="border-b border-gray-300 mt-2"></div>
+                </div>
+
+                <!-- NO HP -->
+                <div>
+                  <label class="text-gray-500 text-xs block mb-1">Mobile / Cell Phone</label>
+
+                  <span v-if="!isEditing" class="text-gray-800 font-medium">{{ no_hp }}</span>
+
+                  <input
+                    v-else
+                    v-model="formProfile.no_hp"
+                    type="text"
+                    class="w-full border rounded-lg px-3 py-2 text-sm"
+                  />
+
+                  <div class="border-b border-gray-300 mt-2"></div>
                 </div>
               </div>
+            </div>
+
+            <!-- SAVE / CANCEL BUTTONS -->
+            <div v-if="isEditing" class="flex gap-3 mt-6">
+              <button
+                @click="saveProfile"
+                class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+              >
+                Save Perubahan
+              </button>
+
+              <button
+                @click="isEditing = false"
+                class="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition"
+              >
+                Cancel
+              </button>
             </div>
           </div>
 
-          <!-- RESERVATION TAB -->
-          <div v-else-if="activeTab === 'reservation'">
-            <div v-if="!selectedBooking">
-              <div class="flex justify-between items-center mb-6">
-                <h1 class="text-2xl font-bold text-gray-800">My Reservation</h1>
-              </div>
+          <!-- ================= RESERVATION TAB ================= -->
+<div v-else-if="activeTab === 'reservation'">
+  
+  <!-- LOADING LIST -->
+  <div v-if="loadingBooking" class="text-center py-10 text-gray-500">
+    Loading reservations...
+  </div>
 
-              <div v-if="loadingBooking" class="text-gray-500 py-4">Loading booking history...</div>
+  <!-- JIKA BELUM ADA BOOKING -->
+  <div v-else-if="bookings.length === 0" class="text-center py-10 text-gray-600">
+    <p class="text-lg font-medium">Belum ada booking.</p>
+  </div>
 
-              <div v-else-if="bookings.length === 0" class="text-gray-500 py-4">
-                You don’t have any bookings.
-              </div>
+  <!-- LIST BOOKING -->
+  <div v-else class="space-y-4">
+    <div
+      v-for="b in bookings"
+      :key="b.id_booking"
+      class="border rounded-lg p-4 shadow hover:shadow-md transition cursor-pointer"
+      @click="viewBookingDetails(b)"
+    >
+      <h3 class="text-lg font-semibold text-gray-800">
+        Booking #{{ b.id_booking }}
+      </h3>
+      <p class="text-sm text-gray-600">Check-in: {{ b.tgl_checkin }}</p>
+      <p class="text-sm text-gray-600">Check-out: {{ b.tgl_checkout }}</p>
+      <p class="text-sm text-gray-600">Status: {{ b.status_booking }}</p>
+    </div>
+  </div>
 
-              <!-- LIST BOOKING (Info Dasar Saja) -->
-              <div v-else class="space-y-5">
-                <div
-                  v-for="b in bookings"
-                  :key="b.id_booking"
-                  class="border border-gray-200 rounded-xl p-4 md:p-5 hover:shadow-md transition"
-                >
-                  <div class="flex flex-col gap-4">
-                    <div class="flex-1">
-                      <h2 class="text-base md:text-lg font-bold text-gray-800">
-                        Booking #{{ b.id_booking }}
-                      </h2>
-                      <p class="text-xs md:text-sm text-gray-600 mt-1">
-                        {{ b.tgl_checkin }} → {{ b.tgl_checkout }} • {{ b.total_malam }} night(s)
-                      </p>
-                      <p class="text-xs md:text-sm text-gray-700 mt-1 font-medium">
-                        Total: Rp {{ b.total_harga.toLocaleString() }}
-                      </p>
-                    </div>
+  <!-- DETAIL BOOKING -->
+  <div v-if="selectedBooking" class="mt-6 p-6 border rounded-xl shadow-lg bg-gray-50">
+    <h2 class="text-xl font-bold mb-4">Detail Booking</h2>
 
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                      <span
-                        class="px-3 py-1 text-xs rounded-full font-medium inline-block"
-                        :class="{
-                          'bg-yellow-100 text-yellow-700': b.status_booking === 'pending',
-                          'bg-green-100 text-green-700': b.status_booking === 'selesai',
-                          'bg-red-100 text-red-700': b.status_booking === 'batal',
-                        }"
-                      >
-                        {{ b.status_booking.charAt(0).toUpperCase() + b.status_booking.slice(1) }}
-                      </span>
-                      <button
-                        @click="viewBookingDetails(b)"
-                        class="w-full sm:w-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition"
-                      >
-                        View Details
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+    <p><strong>ID Booking:</strong> {{ selectedBooking.id_booking }}</p>
+    <p><strong>Total Malam:</strong> {{ selectedBooking.total_malam }}</p>
+    <p><strong>Total Harga:</strong> Rp {{ selectedBooking.total_harga }}</p>
+    <p><strong>Status:</strong> {{ selectedBooking.status_booking }}</p>
 
-            <!-- DETAIL BOOKING -->
-            <div v-else>
-              <!-- Loading Detail -->
-              <div v-if="loadingDetail" class="text-center py-8">
-                <div
-                  class="inline-block w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"
-                ></div>
-                <p class="text-gray-600 mt-2">Loading booking details...</p>
-              </div>
+    <hr class="my-4" />
 
-              <div v-else>
-                <div
-                  class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6"
-                >
-                  <h1 class="text-xl md:text-2xl font-bold text-gray-800">Booking Detail</h1>
-                  <button
-                    @click="selectedBooking = null"
-                    class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg text-sm font-medium transition"
-                  >
-                    ← Back
-                  </button>
-                </div>
+    <h3 class="font-semibold text-lg mb-2">Detail Kamar</h3>
+    <p v-if="selectedBooking.kamar">
+      <strong>Nama Kamar:</strong> {{ selectedBooking.kamar.nama_kamar }}
+      <br />
+      <strong>Harga Kamar:</strong> {{ selectedBooking.kamar.harga }}
+    </p>
 
-                <div class="bg-gray-50 rounded-lg p-4 md:p-6 mb-6">
-                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 mb-6">
-                    <div>
-                      <p class="text-sm text-gray-600">Booking ID</p>
-                      <p class="font-medium">#{{ selectedBooking.id_booking }}</p>
-                    </div>
-                    <div>
-                      <p class="text-sm text-gray-600">Status</p>
-                      <span
-                        class="inline-block px-3 py-1 text-xs rounded-full font-medium mt-1"
-                        :class="{
-                          'bg-yellow-100 text-yellow-700':
-                            selectedBooking.status_booking === 'pending',
-                          'bg-green-100 text-green-700':
-                            selectedBooking.status_booking === 'selesai',
-                          'bg-red-100 text-red-700': selectedBooking.status_booking === 'batal',
-                        }"
-                      >
-                        {{
-                          selectedBooking.status_booking.charAt(0).toUpperCase() +
-                          selectedBooking.status_booking.slice(1)
-                        }}
-                      </span>
-                    </div>
-                    <div>
-                      <p class="text-sm text-gray-600">Check-in</p>
-                      <p class="font-medium">{{ selectedBooking.tgl_checkin }}</p>
-                    </div>
-                    <div>
-                      <p class="text-sm text-gray-600">Check-out</p>
-                      <p class="font-medium">{{ selectedBooking.tgl_checkout }}</p>
-                    </div>
-                    <div>
-                      <p class="text-sm text-gray-600">Duration</p>
-                      <p class="font-medium">{{ selectedBooking.total_malam }} night(s)</p>
-                    </div>
-                    <div>
-                      <p class="text-sm text-gray-600">Total Price</p>
-                      <p class="font-medium">
-                        Rp {{ selectedBooking.total_harga.toLocaleString() }}
-                      </p>
-                    </div>
-                  </div>
-                </div>
+    <hr class="my-4" />
 
-                <!-- Kamar yang Dipesan -->
-                <div class="mb-6">
-                  <h2 class="text-base md:text-lg font-semibold text-gray-800 mb-4">
-                    Rooms Booked
-                  </h2>
-                  <div class="space-y-4">
-                    <div
-                      v-for="k in selectedBooking.kamars"
-                      :key="k.id_kamar"
-                      class="bg-white border rounded-lg overflow-hidden"
-                    >
-                      <div class="flex flex-col sm:flex-row items-start gap-4 p-4">
-                        <div
-                          class="w-full sm:w-32 h-48 sm:h-32 bg-gray-200 rounded-md overflow-hidden flex-shrink-0"
-                        >
-                          <img
-                            :src="getImageUrl(k.jenis_kamar?.url_gambar ?? k.url_gambar)"
-                            class="w-full h-full object-cover"
-                            alt="Room {{ k.nomor_kamar }}"
-                          />
-                        </div>
-                        <div class="flex-1 w-full">
-                          <p class="font-semibold text-gray-800 text-lg">
-                            Room {{ k.nomor_kamar }}
-                          </p>
-                          <p class="text-sm text-gray-600 mt-1">
-                            {{ k.jenis_kamar.jenis_kasur }}
-                          </p>
-                          <p class="text-sm text-gray-700 font-medium mt-2">
-                            Rp {{ k.jenis_kamar.harga_permalam.toLocaleString() }} / night
-                          </p>
+    <h3 class="font-semibold text-lg mb-2">Pembayaran</h3>
+    <p>
+      <strong>Metode:</strong> {{ selectedBooking.pembayaran?.metode }}
+      <br />
+      <strong>Status:</strong> {{ selectedBooking.pembayaran?.status }}
+    </p>
 
-                          <!-- Fasilitas Kamar -->
-                          <p class="text-sm font-medium text-gray-700 mt-2">Room Facilities:</p>
-                          <div
-                            v-if="k.fasilitas && k.fasilitas.length > 0"
-                            class="mt-2 flex flex-wrap gap-2"
-                          >
-                            <div v-for="f in k.fasilitas" :key="f.id_fasilitas">
-                              <i
-                                :class="f.icon_fasilitas"
-                                class="text-[#0e2858] w-4 h-4 flex-shrink-0 mt-0.5"
-                              ></i>
-                              <span
-                                class="px-2 py-1 bg-blue-50 text-[#0e2858] text-xs rounded-full"
-                              >
-                                {{ f.nama_fasilitas }}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+    <button
+      @click="selectedBooking = null"
+      class="mt-6 px-4 py-2 bg-gray-300 text-gray-900 rounded-lg hover:bg-gray-400 transition"
+    >
+      Tutup Detail
+    </button>
+  </div>
 
-                <!-- Additional Services -->
-                <div
-                  v-if="
-                    selectedBooking.additional_services &&
-                    selectedBooking.additional_services.length > 0
-                  "
-                  class="mb-6"
-                >
-                  <h2 class="text-base md:text-lg font-semibold text-gray-800 mb-4">
-                    Additional Services
-                  </h2>
-                  <div class="bg-white border rounded-lg p-4">
-                    <div class="space-y-3">
-                      <div
-                        v-for="service in selectedBooking.additional_services"
-                        :key="service.id_additional_service || service.id_service"
-                        class="flex flex-col sm:flex-row items-start gap-4 pb-3 border-b last:border-b-0 last:pb-0"
-                      >
-                        <div
-                          v-if="service.url_gambar"
-                          class="w-full sm:w-24 h-20 sm:h-16 bg-gray-200 rounded-md overflow-hidden flex-shrink-0"
-                        >
-                          <img
-                            :src="
-                              service.url_gambar.startsWith('http')
-                                ? service.url_gambar
-                                : `http://127.0.0.1:8000/storage/${service.url_gambar}`
-                            "
-                            class="w-full h-full object-cover"
-                            alt="{{ service.nama_layanan || service.nama_service }}"
-                          />
-                        </div>
-                        <div class="flex-1">
-                          <p class="font-medium text-gray-800">
-                            {{ service.nama || service.nama_service }}
-                          </p>
-                          <p class="text-sm text-gray-600 mt-1">
-                            {{ service.deskripsi_layanan || service.deskripsi_service }}
-                          </p>
-                        </div>
-                        <p class="text-sm font-semibold text-gray-700 sm:ml-4 whitespace-nowrap">
-                          Rp {{ (service.harga || service.harga_service || 0).toLocaleString() }}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+</div>
 
-                <!-- Payment Information -->
-                <div v-if="selectedBooking.pembayaran" class="mb-6">
-                  <h2 class="text-base md:text-lg font-semibold text-gray-800 mb-4">
-                    Payment Information
-                  </h2>
-                  <div class="bg-white border rounded-lg p-4">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <p class="text-sm text-gray-600">Payment Method</p>
-                        <p class="font-medium">
-                          {{ selectedBooking.pembayaran.metode_pembayaran }}
-                        </p>
-                      </div>
-                      <div>
-                        <p class="text-sm text-gray-600">Payment Status</p>
-                        <span
-                          class="inline-block px-3 py-1 text-xs rounded-full font-medium mt-1"
-                          :class="{
-                            'bg-yellow-100 text-yellow-700':
-                              selectedBooking.pembayaran.status_pembayaran === 'pending',
-                            'bg-green-100 text-green-700':
-                              selectedBooking.pembayaran.status_pembayaran === 'paid',
-                            'bg-red-100 text-red-700':
-                              selectedBooking.pembayaran.status_pembayaran === 'failed',
-                          }"
-                        >
-                          {{
-                            selectedBooking.pembayaran.status_pembayaran.charAt(0).toUpperCase() +
-                            selectedBooking.pembayaran.status_pembayaran.slice(1)
-                          }}
-                        </span>
-                      </div>
-                      <div>
-                        <p class="text-sm text-gray-600">Total Amount</p>
-                        <p class="font-medium text-lg text-green-600">
-                          Rp {{ selectedBooking.pembayaran.jumlah_dibayar.toLocaleString() }}
-                        </p>
-                      </div>
-                      <div v-if="selectedBooking.pembayaran.tanggal_pembayaran">
-                        <p class="text-sm text-gray-600">Payment Date</p>
-                        <p class="font-medium">
-                          {{ selectedBooking.pembayaran.tanggal_pembayaran }}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+
         </div>
       </div>
     </div>
@@ -495,50 +313,97 @@
 </template>
 
 <script setup>
-import axios from 'axios'
-import { ref, onMounted } from 'vue'
+import axios from "axios"
+import { ref, onMounted } from "vue"
 
-const activeTab = ref('profile')
-const selectedBooking = ref(null) // untuk menampilkan detail
+const activeTab = ref("profile")
+const selectedBooking = ref(null)
 const showSidebar = ref(false)
 
-const name = ref('')
-const email = ref('')
-const no_hp = ref('')
+const userId = ref(null)
+
+const name = ref("")
+const email = ref("")
+const alamat = ref("")
+const no_hp = ref("")
 
 const bookings = ref([])
 const loadingPage = ref(true)
-const loadingBooking = ref(false)
 const loadingDetail = ref(false)
+const loadingBooking = ref(false)
+
+const isEditing = ref(false)
+
+const formProfile = ref({
+  name: "",
+  email: "",
+  alamat: "",
+  no_hp: "",
+})
+
+const startEdit = () => {
+  formProfile.value = {
+    name: name.value,
+    email: email.value,
+    alamat: alamat.value,
+    no_hp: no_hp.value,
+  }
+  isEditing.value = true
+}
+
+const saveProfile = async () => {
+  try {
+    const token = localStorage.getItem("token")
+
+    await axios.put(
+      `http://127.0.0.1:8000/api/profile/${userId.value}`,
+      formProfile.value,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
+
+    // update UI
+    name.value = formProfile.value.name
+    email.value = formProfile.value.email
+    alamat.value = formProfile.value.alamat
+    no_hp.value = formProfile.value.no_hp
+
+    isEditing.value = false
+    alert("Profile updated successfully!")
+  } catch (err) {
+    console.error(err)
+    alert("Failed to update profile")
+  }
+}
 
 const switchTab = async (tab) => {
   activeTab.value = tab
-  selectedBooking.value = null // reset saat ganti tab
-
-  if (tab === 'reservation') {
-    getBookings()
-  }
+  selectedBooking.value = null
+  if (tab === "reservation") getBookings()
 }
 
 const switchTabMobile = async (tab) => {
   activeTab.value = tab
   selectedBooking.value = null
-  showSidebar.value = false // close dropdown after selection
-
-  if (tab === 'reservation') {
-    getBookings()
-  }
+  showSidebar.value = false
+  if (tab === "reservation") getBookings()
 }
 
 const getProfile = async () => {
   try {
-    const token = localStorage.getItem('token')
-    const res = await axios.get('http://localhost:8000/api/me', {
+    const token = localStorage.getItem("token")
+    const res = await axios.get("http://127.0.0.1:8000/api/me", {
       headers: { Authorization: `Bearer ${token}` },
     })
-    name.value = res.data.data.name
-    email.value = res.data.data.email
-    no_hp.value = res.data.data.no_hp
+
+    const u = res.data.data
+    userId.value = u.id
+    
+    name.value = u.name
+    email.value = u.email
+    alamat.value = u.alamat
+    no_hp.value = u.no_hp
   } catch (e) {
     console.error(e)
   }
@@ -552,20 +417,35 @@ const getBookings = async () => {
       headers: { Authorization: `Bearer ${token}` },
     })
 
-    // Handle different response structures
-    const data = res.data.data
-    if (data.bookings) {
-      bookings.value = data.bookings
-    } else if (Array.isArray(data)) {
-      bookings.value = data
-    } else if (data.booking) {
-      // Jika response hanya satu booking object, wrap dalam array
-      bookings.value = [data.booking]
-    } else {
+    let d = res.data.data
+
+    console.log("HASIL API BOOKING =", d) // 🔥 WAJIB UNTUK DEBUG
+
+    if (!d) {
       bookings.value = []
     }
+    // Jika API mengirim { data: { bookings: [...] } }
+    else if (Array.isArray(d.bookings)) {
+      bookings.value = d.bookings
+    }
+    // Jika API mengirim { data: { booking: [...] } }
+    else if (Array.isArray(d.booking)) {
+      bookings.value = d.booking
+    }
+    // Jika API mengirim { data: [ ... ] }
+    else if (Array.isArray(d)) {
+      bookings.value = d
+    }
+    // Jika hanya 1 booking object
+    else if (d.booking) {
+      bookings.value = [d.booking]
+    }
+    else {
+      bookings.value = []
+    }
+
   } catch (e) {
-    console.error(e)
+    console.error("Error get bookings:", e)
     bookings.value = []
   }
   loadingBooking.value = false
@@ -574,31 +454,32 @@ const getBookings = async () => {
 const viewBookingDetails = async (booking) => {
   loadingDetail.value = true
   try {
-    const token = localStorage.getItem('token')
-    const res = await axios.get(`http://localhost:8000/api/booking/${booking.id_booking}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    const token = localStorage.getItem("token")
+    const res = await axios.get(
+      `http://127.0.0.1:8000/api/booking/${booking.id_booking}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
 
-    // Set detail booking dari response
-    const detailData = res.data.data.booking || res.data.data
-    selectedBooking.value = detailData
-    console.log('Selected Booking Detail:', selectedBooking.value)
+    const detail = res.data.data.booking || res.data.data
+    selectedBooking.value = detail
   } catch (e) {
-    console.error('Error fetching booking detail:', e)
-    alert('Failed to load booking details')
+    console.error("Error detail booking:", e)
   }
   loadingDetail.value = false
 }
 
 const getImageUrl = (urlGambar) => {
-  if (!urlGambar) {
-    return '/images/default-room.jpg'
-  }
-  return `http://localhost:8000/storage/${urlGambar}`
+  if (!urlGambar) return "/images/default-room.jpg"
+  return `http://127.0.0.1:8000/storage/${urlGambar}`
 }
+
 
 onMounted(async () => {
   await getProfile()
   loadingPage.value = false
 })
+
+
 </script>
