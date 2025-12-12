@@ -1,6 +1,6 @@
 <template>
-  <div v-if="isOpen" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-    <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-sm">
+  <div v-if="isOpen" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm">
+    <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-sm">
       <h3 class="text-xl font-semibold mb-4 text-red-600">Konfirmasi Penghapusan</h3>
       
       <p class="text-gray-700 mb-6">Anda yakin ingin menghapus Layanan Tambahan ID: **{{ serviceId }}**? Tindakan ini tidak dapat dibatalkan.</p>

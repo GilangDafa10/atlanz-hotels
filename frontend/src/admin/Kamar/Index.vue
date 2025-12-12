@@ -35,6 +35,11 @@
             <th
               class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
             >
+              Status
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
               Aksi
             </th>
           </tr>
@@ -46,6 +51,12 @@
           <tr v-for="kamar in kamarList" :key="kamar.id">
             <td class="px-6 py-4 whitespace-nowrap font-medium">{{ kamar.number }}</td>
             <td class="px-6 py-4 whitespace-nowrap">{{ kamar.type }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span
+                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800"
+                >On Used</span
+              >
+            </td>
             <td class="px-6 py-4 whitespace-nowrap">
               <button @click="openEditModal(kamar)" class="text-blue-600 hover:text-blue-800 mr-4">
                 <svg
