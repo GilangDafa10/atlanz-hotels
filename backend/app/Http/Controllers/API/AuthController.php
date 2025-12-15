@@ -138,46 +138,24 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        // TERIMA token dari dua kemungkinan nama field (frontend bisa kirim 'recaptcha_token' atau 'g-recaptcha-response')
-        $token = $request->input('recaptcha_token') ?? $request->input('g-recaptcha-response');
-
-        // Validasi dasar
         $request->validate([
             'email'    => 'required|email',
             'password' => 'required',
+            'recaptcha_token' => 'required',
         ]);
 
-        // Pastikan token ada
-        if (!$token) {
-            return response()->json([
-                'status' => false,
-                'message' => 'ReCAPTCHA token tidak ditemukan. Silakan centang captcha.'
-            ], 422);
-        }
+        // Verify captcha
+        $response = Http::asForm()->post(
+            'https://www.google.com/recaptcha/api/siteverify',
+            [
+                'secret'   => env('CAPTCHA_SECRET'),
+                'response' => $request->recaptcha_token,
+            ]
+        );
 
-        // VALIDASI TOKEN KE GOOGLE
-        try {
-            $response = Http::asForm()->post(
-                'https://www.google.com/recaptcha/api/siteverify',
-                [
-                    'secret'   => env('CAPTCHA_SECRET'), // pastikan .env backend punya CAPTCHA_SECRET
-                    'response' => $token,
-                    // 'remoteip' => $request->ip(), // opsional
-                ]
-            );
-        } catch (\Exception $e) {
+        if (!($response->json('success'))) {
             return response()->json([
-                'status' => false,
-                'message' => 'Gagal memverifikasi ReCAPTCHA: '.$e->getMessage()
-            ], 500);
-        }
-
-        $body = $response->json();
-
-        if (empty($body) || !isset($body['success']) || $body['success'] !== true) {
-            return response()->json([
-                'status' => false,
-                'message' => 'ReCAPTCHA tidak valid.'
+                'message' => 'ReCAPTCHA verification failed'
             ], 422);
         }
 
