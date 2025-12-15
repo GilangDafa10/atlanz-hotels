@@ -1,7 +1,11 @@
 <template>
-  <Teleport to="body">
-    <div v-if="isOpen" class="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] transition-opacity duration-300" @click.self="close">
-      <div class="bg-white rounded-lg shadow-xl max-w-lg w-full p-6 transition-transform duration-300">
+  <Teleport to="body">
+    <div 
+        v-if="isOpen" 
+        class="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] transition-opacity duration-300 backdrop-blur-sm" 
+        @click.self="close"
+    >
+      <div class="bg-white rounded-lg shadow-xl max-w-lg w-full p-6 transition-transform duration-300">
         <div class="flex justify-between items-center mb-4 border-b pb-3">
           <h3 class="text-xl font-bold">Edit Fasilitas: {{ form.nama_fasilitas }}</h3>
           <button @click="close" class="text-gray-500 hover:text-gray-700 text-xl">&times;</button>
