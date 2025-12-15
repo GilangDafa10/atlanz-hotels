@@ -28,7 +28,9 @@
     </div>
 
     <!-- 2. SNORKLING (gambar kanan) -->
-    <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center px-6 mb-20">
+    <div
+      class="max-w-6xl mx-auto flex flex-col-reverse md:grid md:grid-cols-2 gap-10 items-center px-6 mb-20"
+    >
       <!-- Text -->
       <div>
         <h3 class="text-3xl text-[#123466] font-bold mb-3 tracking-wide">SNORKLING</h3>

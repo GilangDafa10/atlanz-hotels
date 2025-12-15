@@ -207,28 +207,7 @@ class AuthController extends Controller
         ]);
     }
 
-    public function update(UserStoreRequest $request, $id)
-    {
-        $validated = $request->validated();
-
-        if (auth()->user()->id !== (int) $id) {
-            return response()->json(['status' => false, 'message' => 'Forbidden'], 403);
-        }
-
-        $user = User::find($id);
-
-        if (!$user) {
-            return response()->json(['status' => false, 'message' => 'User not found'], 404);
-        }
-
-        $user->update($validated);
-
-        return response()->json([
-            'status'  => true,
-            'message' => 'User updated',
-            'data'    => new UserResource($user)
-        ]);
-    }
+    
 
     public function me(Request $request)
     {

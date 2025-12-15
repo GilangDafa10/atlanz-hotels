@@ -38,13 +38,6 @@
             >
               BOOK NOW
             </button>
-
-            <!-- <button
-              @click="goToAdditionalServices(room)"
-              class="bg-[#0c2c67] hover:bg-[#081e47] text-white px-5 py-2 rounded-md text-sm font-medium mt-2 transition-transform hover:scale-105"
-            >
-              ADDITIONAL SERVICES
-            </button> -->
           </div>
         </div>
       </div>
@@ -75,13 +68,22 @@ const jenis_kamar = ref([])
 onMounted(async () => {
   const res = await axios.get('http://127.0.0.1:8000/api/jenis-kamar', {
     params: {
-      check_in: route.query.checkIn,
-      check_out: route.query.checkOut,
+      check_in: route.query.check_in,
+      check_out: route.query.check_out,
     },
   })
 
   // Jika API Anda mengembalikan data.data
-  jenis_kamar.value = res.data.data ?? res.data
+  const rawData = res.data.data ?? res.data
+
+  // Transform URL gambar dengan menambahkan base URL
+  jenis_kamar.value = rawData.map((room) => ({
+    ...room,
+    url_gambar: room.url_gambar
+      ? `http://127.0.0.1:8000/storage/${room.url_gambar}`
+      : 'https://via.placeholder.com/400x250?text=No+Image',
+  }))
+
   console.log(jenis_kamar.value)
 })
 
@@ -90,20 +92,8 @@ const goToBooking = (room) => {
     name: 'booking', // sesuaikan dengan nama route kamu
     query: {
       jenis_kamar_id: room.id_jenis_kamar,
-      check_in: route.query.checkIn,
-      check_out: route.query.checkOut,
-      rooms: route.query.rooms,
-    },
-  })
-}
-
-const goToAdditionalServices = (room) => {
-  router.push({
-    name: 'addservice', // sesuaikan dengan route kamu
-    query: {
-      jenis_kamar_id: room.id_jenis_kamar,
-      check_in: route.query.checkIn,
-      check_out: route.query.checkOut,
+      check_in: route.query.check_in,
+      check_out: route.query.check_out,
       rooms: route.query.rooms,
     },
   })

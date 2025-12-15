@@ -14,7 +14,7 @@ class JenisKamarController extends Controller
      */
     public function index()
     {
-        $jenisKamar = JenisKamar::all();
+        $jenisKamar = JenisKamar::with('fasilitas')->get();
 
         if ($jenisKamar->isEmpty()) {
             return response()->json([
@@ -53,9 +53,19 @@ class JenisKamarController extends Controller
         $jenis = JenisKamar::create($payload);
 
         // Jika fasilitas diberikan → attach ke pivot
-        if ($fasilitas !== null) {
-            $fasilitasIds = is_array($fasilitas) ? $fasilitas : [$fasilitas];
-            $jenis->fasilitas()->attach($fasilitasIds);
+        if (!empty($fasilitas)) {
+            // jika dikirim sebagai string "1,2,3", ubah jadi array
+            if (is_string($fasilitas)) {
+                $fasilitas = array_filter(array_map('trim', explode(',', $fasilitas)));
+            }
+
+            // pastikan semua elemen integer
+            $fasilitasIds = array_map('intval', (is_array($fasilitas) ? $fasilitas : [$fasilitas]));
+
+            // jika ada nilai valid, attach/sync
+            if (!empty($fasilitasIds)) {
+                $jenis->fasilitas()->attach($fasilitasIds);
+            }
         }
 
         return response()->json([
@@ -70,7 +80,9 @@ class JenisKamarController extends Controller
      */
     public function show($id_jenis_kamar)
     {
-        $jenis = JenisKamar::where('id_jenis_kamar', $id_jenis_kamar)->first();
+        $jenis = JenisKamar::with('fasilitas')
+        ->where('id_jenis_kamar', $id_jenis_kamar)
+        ->first();
 
         if (!$jenis) {
             return response()->json([
@@ -126,8 +138,11 @@ class JenisKamarController extends Controller
         $jenis->update($payload);
 
         // Update fasilitas (sync = replace semua)
-        if ($fasilitas !== null) {
-            $fasilitasIds = is_array($fasilitas) ? $fasilitas : [$fasilitas];
+        if (!empty($fasilitas)) {
+            if (is_string($fasilitas)) {
+                $fasilitas = array_filter(array_map('trim', explode(',', $fasilitas)));
+            }
+            $fasilitasIds = array_map('intval', (is_array($fasilitas) ? $fasilitas : [$fasilitas]));
             $jenis->fasilitas()->sync($fasilitasIds);
         }
 

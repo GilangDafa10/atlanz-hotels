@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\FasilitasResource;
 
 class JenisKamarResource extends JsonResource
 {
@@ -15,6 +16,9 @@ class JenisKamarResource extends JsonResource
             'harga_permalam' => $this->harga_permalam,
             'deskripsi'      => $this->deskripsi,
             'url_gambar'     => $this->url_gambar,
+            'fasilitas' => FasilitasResource::collection(
+                $this->whenLoaded('fasilitas')
+            ),
         ];
     }
 }

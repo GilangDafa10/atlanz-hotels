@@ -1,8 +1,8 @@
 <template>
   <footer class="bg-[#0b1f4f] text-white py-6 w-full">
-
-    <div class="flex flex-col md:flex-row items-center justify-between border-b-2 border-gray-400 pb-4 px-8 w-full">
-
+    <div
+      class="flex flex-col md:flex-row items-center justify-between border-b-2 border-gray-400 pb-4 px-8 w-full"
+    >
       <!-- Logo -->
       <div class="flex flex-col items-center md:items-start">
         <h2 class="text-4xl font-bold tracking-wide">ATLANZ</h2>
@@ -10,14 +10,11 @@
       </div>
 
       <!-- Navigation -->
-      <ul
-        class="flex flex-wrap justify-center gap-6 text-sm font-medium my-4 md:my-0"
-      >
-        <li><a href="#" class="hover:underline underline-offset-4">Home</a></li>
-        <li><a href="#" class="hover:underline underline-offset-4">Book</a></li>
-        <li><a href="#" class="hover:underline underline-offset-4">Rooms</a></li>
-        <li><a href="#" class="hover:underline underline-offset-4">Facilities</a></li>
-        <li><a href="#" class="hover:underline underline-offset-4">Contact-us</a></li>
+      <ul class="flex flex-wrap justify-center gap-6 text-sm font-medium my-4 md:my-0">
+        <li><a href="/" class="hover:underline underline-offset-4">Home</a></li>
+        <li><a href="/#services" class="hover:underline underline-offset-4">Services</a></li>
+        <li><a href="/rooms" class="hover:underline underline-offset-4">Rooms</a></li>
+        <li><a href="/contact-us" class="hover:underline underline-offset-4">Contact-us</a></li>
       </ul>
 
       <!-- Social Icons -->
@@ -36,11 +33,11 @@
 </template>
 
 <script setup>
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { faFacebookF, faTwitter, faInstagram } from "@fortawesome/free-brands-svg-icons";
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faFacebookF, faTwitter, faInstagram } from '@fortawesome/free-brands-svg-icons'
 
-library.add(faFacebookF, faTwitter, faInstagram);
+library.add(faFacebookF, faTwitter, faInstagram)
 </script>
 
 <style scoped>

@@ -9,10 +9,10 @@
         ROOM & SUITES
       </h1>
       <p class="text-sm md:text-base leading-relaxed text-[#1E2A3A] text-center">
-        Each of our bright, light-flooded rooms come with everything you could possibly need for a
-        comfortable stay. And yes, comfort isn't our only objective, we also value good design,
-        sleek contemporary furnishing complemented by the rich tones of nature's palette as visible
-        from our rooms' sea-view windows and terraces.
+        Setiap kamar kami dirancang dengan atmosfer terang dan modern, menghadirkan kenyamanan
+        optimal selama Anda menginap. Tidak hanya fokus pada fungsi, kami juga menghadirkan sentuhan
+        estetika melalui desain interior yang elegan, perabotan kontemporer, serta material
+        bernuansa alam yang memberikan rasa hangat dan harmonis.
       </p>
     </div>
   </section>
@@ -23,21 +23,22 @@
     </div>
 
     <div class="w-full md:w-1/2 text-white text-left px-6 md:px-12">
-      <h2 class="text-xl md:text-3xl font-semibold mb-3">Ocean View Room</h2>
+      <h2 class="text-xl md:text-3xl font-semibold mb-3">Queen Bed</h2>
       <p class="text-sm md:text-base mb-4 leading-relaxed text-gray-200">
-        Each of our bright, light-flooded rooms come with everything you could possibly need for a
-        comfortable stay.
+        Kamar dengan tempat tidur ukuran Queen, cocok untuk pasangan atau tamu yang menginginkan
+        ruang tidur nyaman dengan ukuran kasur lebih besar. Didesain dengan gaya modern, pencahayaan
+        hangat, dan suasana yang nyaman untuk beristirahat setelah aktivitas seharian.
       </p>
       <ul class="list-disc pl-5 space-y-1 text-gray-300">
         <li>Ocean View</li>
-        <li>25 - 35 m² room</li>
-        <li>Reguler bed</li>
+        <li>Rp. 350.000 / Malam</li>
+        <li>Queen bed</li>
       </ul>
-      <button
+      <!-- <button
         class="mt-6 bg-[#E3C681] text-[#1E2A3A] font-semibold px-6 py-2 rounded-md hover:bg-[#d4b65f] transition"
       >
         BOOK NOW
-      </button>
+      </button> -->
     </div>
   </section>
 
@@ -49,21 +50,22 @@
     </div>
 
     <div class="w-full md:w-1/2 text-[#1E2A3A] text-left px-6 md:px-12">
-      <h2 class="text-xl md:text-3xl font-semibold mb-3">Beach View Room</h2>
+      <h2 class="text-xl md:text-3xl font-semibold mb-3">Twin Bed</h2>
       <p class="text-sm md:text-base mb-4 leading-relaxed">
-        Each of our bright, light-flooded rooms come with everything you could possibly need for a
-        comfortable stay.
+        Kamar dengan dua tempat tidur single, cocok untuk teman perjalanan, partner kerja, atau
+        keluarga yang menginginkan tempat tidur terpisah. Kamar ini menawarkan kenyamanan dengan
+        desain minimalis modern dan fasilitas lengkap.
       </p>
       <ul class="list-disc pl-5 space-y-1">
         <li>Ocean View</li>
-        <li>25 - 35 m² room</li>
+        <li>Rp. 300.000 / Malam</li>
         <li>Twin bed</li>
       </ul>
-      <button
+      <!-- <button
         class="mt-6 bg-[#E3C681] text-[#1E2A3A] font-semibold px-6 py-2 rounded-md hover:bg-[#d4b65f] transition"
       >
         BOOK NOW
-      </button>
+      </button> -->
     </div>
   </section>
 
@@ -77,52 +79,22 @@
     </div>
 
     <div class="w-full md:w-1/2 text-white text-left text-left px-6 md:px-12">
-      <h2 class="text-xl md:text-3xl font-semibold mb-3">Deluxe Ocean View Room</h2>
+      <h2 class="text-xl md:text-3xl font-semibold mb-3">Double Bed</h2>
       <p class="text-sm md:text-base mb-4 leading-relaxed text-gray-200">
-        Each of our bright, light-flooded rooms come with everything you could possibly need for a
-        comfortable stay.
+        Kamar dengan tempat tidur double yang menawarkan kenyamanan bagi satu atau dua tamu. Cocok
+        untuk pelancong solo, business traveler, atau pasangan dengan budget hemat tetapi tetap
+        menginginkan kualitas kamar yang nyaman.
       </p>
       <ul class="list-disc pl-5 space-y-1 text-gray-300">
         <li>Ocean View</li>
-        <li>40 - 55 m² room </li>
-        <li>King Size bed</li>
+        <li>Rp. 250.000 / Malam</li>
+        <li>Double bed</li>
       </ul>
-      <button
+      <!-- <button
         class="mt-6 bg-[#E3C681] text-[#1E2A3A] font-semibold px-6 py-2 rounded-md hover:bg-[#d4b65f] transition"
       >
         BOOK NOW
-      </button>
-    </div>
-  </section>
-
-  <section
-    class="bg-white py-16 flex flex-col md:flex-row-reverse items-center justify-center gap-8"
-  >
-    <div class="w-full md:w-1/2">
-      <img
-        src="@/assets/image 11.png"
-        alt="Beach View Room"
-        class="shadow-lg w-full object-cover"
-      />
-    </div>
-
-    <div class="w-full md:w-1/2 text-[#1E2A3A] text-left px-6 md:px-12">
-      <h2 class="text-xl md:text-3xl font-semibold mb-3">Superior Ocean View Room</h2>
-      <p class="text-sm md:text-base mb-4 leading-relaxed">
-        Each of our bright, light-flooded rooms come with everything you could possibly need for a
-        comfortable stay.
-      </p>
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Ocean View</li>
-        <li>60 - 70 m² room</li>
-        <li>King Size</li>
-        <li>Living Room</li>
-      </ul>
-      <button
-        class="mt-6 bg-[#E3C681] text-[#1E2A3A] font-semibold px-6 py-2 rounded-md hover:bg-[#d4b65f] transition"
-      >
-        BOOK NOW
-      </button>
+      </button> -->
     </div>
   </section>
 </template>

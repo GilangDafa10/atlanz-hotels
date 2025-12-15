@@ -20,6 +20,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('no_hp')->nullable(); // tambahkan jika kamu ingin kolom no_hp
+            $table->string('alamat')->nullable();
             $table->timestamps();
 
             // relasi foreign key

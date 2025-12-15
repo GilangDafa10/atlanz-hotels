@@ -8,15 +8,15 @@
     >
       <transition name="modal">
         <!-- CARD -->
-        <div v-if="show" class="bg-[#0f2344] w-full max-w-4xl rounded-xl p-4 text-white">
+        <div v-if="show" class="bg-[#0f2344] w-full md:max-w-4xl rounded-xl p-4 mx-4 text-white">
           <!-- FORM GRID -->
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 items-end">
             <div>
               <label class="block mb-1 text-sm">Check-in</label>
               <input
                 type="date"
                 v-model="checkIn"
-                class="w-full px-3 py-2 rounded bg-white text-black"
+                class="w-full px-3 py-2 rounded bg-white text-black date-input"
               />
             </div>
 
@@ -25,7 +25,7 @@
               <input
                 type="date"
                 v-model="checkOut"
-                class="w-full px-3 py-2 rounded bg-white text-black"
+                class="w-full px-3 py-2 rounded bg-white text-black date-input"
               />
             </div>
 
@@ -69,12 +69,12 @@ const close = () => emit('close')
 
 const submitBooking = () => {
   // Redirect ke halaman rooms dengan query
-  
+
   router.push({
-    path: '/cari-kamar',
+    path: '/room-selection',
     query: {
-      checkIn: checkIn.value,
-      checkOut: checkOut.value,
+      check_in: checkIn.value,
+      check_out: checkOut.value,
       rooms: rooms.value,
     },
   })
@@ -117,5 +117,25 @@ watch(
 .modal-leave-to {
   opacity: 0;
   transform: translateY(-10px);
+}
+
+.date-input {
+  font-size: 16px;
+  padding: 0.375rem 0.75rem; /* py-1.5 px-3 */
+  border: 1px solid #ccc;
+}
+
+@media (max-width: 768px) {
+  .date-input {
+    font-size: 16px;
+    padding: 0.375rem 0.5rem; /* kurangi horizontal padding */
+  }
+
+  /* Untuk Chrome/Edge */
+  .date-input::-webkit-calendar-picker-indicator {
+    width: 16px;
+    height: 16px;
+    opacity: 0.7;
+  }
 }
 </style>

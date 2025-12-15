@@ -11,13 +11,13 @@
 
           <!-- EMAIL -->
           <div class="text-left">
-            <label class="text-sm font-medium text-black mb-1 block"> Username / Email </label>
+            <label class="text-sm font-medium text-black mb-1 block"> Email </label>
             <input
               v-model="username"
               type="text"
               required
               class="w-full px-4 py-2 rounded-lg bg-white/90 focus:bg-white border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none"
-              placeholder="Username / Email"
+              placeholder="Email"
             />
           </div>
 
@@ -49,16 +49,7 @@
               </button>
             </div>
           </div>
-
-<<<<<<< Updated upstream
-          <!-- Button -->
-          <button
-            :disabled="loading"
-            class="w-full mt-1 bg-blue-600 text-white py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 active:scale-95 transition"
-          >
-            {{ loading ? 'Loading...' : 'Login' }}
-          </button>
-=======
+          
           <!-- 🟦 RECAPTCHA BOX -->
           <div class="mt-2 flex justify-center">
             <div ref="recaptchaBox" class="g-recaptcha"></div>
@@ -92,7 +83,6 @@
             Login with GitHub
           </button>
 
->>>>>>> Stashed changes
         </form>
 
         <p v-if="errorMessage" class="text-red-600 text-sm mt-3">
@@ -111,12 +101,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import axios from 'axios'
-<<<<<<< Updated upstream
-=======
 import api from '@/utils/api'
->>>>>>> Stashed changes
 import { useRouter } from 'vue-router'
 import SuccessLoginModal from '@/components/SuccessLoginModal.vue'
 
@@ -127,7 +114,6 @@ const password = ref('')
 const showPassword = ref(false)
 const loading = ref(false)
 const errorMessage = ref(null)
-
 const showSuccessModal = ref(false)
 
 const togglePassword = () => {
@@ -142,11 +128,9 @@ const recaptchaToken = ref(null)
 const recaptchaBox = ref(null)
 let grecaptchaWidgetId = null
 
-// safe loader: jika grecaptcha belum ada, coba lagi sampai 2 detik
 const loadRecaptcha = () => {
   const tryRender = () => {
     if (window.grecaptcha && typeof window.grecaptcha.render === 'function') {
-      // render sekali
       grecaptchaWidgetId = window.grecaptcha.render(recaptchaBox.value, {
         sitekey: siteKey,
         callback: (token) => {
@@ -163,27 +147,20 @@ const loadRecaptcha = () => {
 
   if (!tryRender()) {
     const interval = setInterval(() => {
-      if (tryRender()) {
-        clearInterval(interval)
-      }
+      if (tryRender()) clearInterval(interval)
     }, 300)
-    // auto-stop after 3s
+
     setTimeout(() => clearInterval(interval), 3000)
   }
 }
 
-onMounted(() => {
-  loadRecaptcha()
-})
-
 /* ---------------------------
-  LOGIN (kirim recaptcha_token)
+  LOGIN
 ----------------------------*/
 const login = async () => {
   loading.value = true
   errorMessage.value = null
 
-  // pastikan token tersedia
   if (!recaptchaToken.value) {
     errorMessage.value = 'Please verify reCAPTCHA!'
     loading.value = false
@@ -194,58 +171,47 @@ const login = async () => {
     const payload = {
       email: username.value,
       password: password.value,
-      recaptcha_token: recaptchaToken.value, // KIRIM dengan nama 'recaptcha_token'
+      recaptcha_token: recaptchaToken.value
     }
 
     const res = await axios.post('http://127.0.0.1:8000/api/login', payload)
 
-    localStorage.setItem('token', res.data.data.token)
+    const token = res.data.data.token
+    localStorage.setItem('token', token)
     localStorage.setItem('isLoggedIn', 'true')
+    localStorage.setItem('lastActivity', Date.now())
 
-<<<<<<< Updated upstream
-    // 1️⃣ Tampilkan modal sukses login
-    showSuccessModal.value = true
-
-    // 2️⃣ Setelah 3 detik → redirect ke /
-    setTimeout(() => {
-      router.push('/')
-    }, 3000)
-=======
-    // ambil role
     const me = await api.get('/me')
     const role = me.data.data.id_role
     localStorage.setItem('role', role)
 
     showSuccessModal.value = true
 
-    // bersihkan captcha agar user bisa login lain kali (opsional)
+    // reset captcha setelah login
     try {
       if (window.grecaptcha && grecaptchaWidgetId !== null) {
         window.grecaptcha.reset(grecaptchaWidgetId)
         recaptchaToken.value = null
-        // render ulang widget (optional, but some browsers need)
         loadRecaptcha()
       }
     } catch (e) {
       // ignore
     }
 
+
     setTimeout(() => {
       router.push(role == 1 ? '/admin/dashboard' : '/')
-    }, 1000)
->>>>>>> Stashed changes
+    }, 1200)
   } catch (err) {
-    // tampilkan pesan error server jika ada
-    errorMessage.value = err.response?.data?.message || err.message || 'Login gagal!'
+    errorMessage.value =
+      err.response?.data?.message || err.message || 'Login gagal!'
   } finally {
     loading.value = false
   }
 }
-<<<<<<< Updated upstream
-=======
 
 /* ---------------------------
-  Social logins
+  SOCIAL LOGIN
 ----------------------------*/
 const loginWithGoogle = async () => {
   const res = await axios.get('http://127.0.0.1:8000/api/auth/google/redirect')
@@ -258,22 +224,22 @@ const loginWithGithub = async () => {
 }
 
 /* ---------------------------
-  handling social login callback token in route
+  HANDLE CALLBACK TOKEN
 ----------------------------*/
 onMounted(async () => {
+  loadRecaptcha()
+
   const token = router.currentRoute.value.query.token
+  if (!token) return
 
-  if (token) {
-    localStorage.setItem('token', token)
-    localStorage.setItem('isLoggedIn', 'true')
-    localStorage.setItem('lastActivity', Date.now())
+  localStorage.setItem('token', token)
+  localStorage.setItem('isLoggedIn', 'true')
+  localStorage.setItem('lastActivity', Date.now())
 
-    const me = await api.get('/me')
-    const role = me.data.data.id_role
-    localStorage.setItem('role', role)
+  const me = await api.get('/me')
+  const role = me.data.data.id_role
+  localStorage.setItem('role', role)
 
-    router.replace(role == 1 ? '/dashboard' : '/')
-  }
+  router.replace(role == 1 ? '/admin/dashboard' : '/')
 })
->>>>>>> Stashed changes
 </script>

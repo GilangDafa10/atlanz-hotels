@@ -10,6 +10,8 @@ use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\API\DashboardController;
 use App\Http\Controllers\API\FasilitasController;
 use App\Http\Controllers\API\PembayaranController;
+use App\Http\Controllers\API\SocialAuthController;
+use App\Http\Controllers\API\UserController;
 
 // ================================
 // PUBLIC ROUTES
@@ -18,6 +20,8 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
 Route::post('/resend-otp', [AuthController::class, 'resendOtp']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/auth/{provider}/redirect', [SocialAuthController::class, 'redirect']);
+Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'callback']);
 
 // Midtrans
 Route::post('/midtrans-notification', [PembayaranController::class, 'notificationHandler']);
@@ -33,7 +37,7 @@ Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function ()
     // ROUTE UNTUK SEMUA ROLE (Admin & User)
     // ============================================
     Route::get('/me', [AuthController::class, 'me']);
-    Route::put('/profile/{id}', [AuthController::class, 'update']);
+    Route::put('/profile/{id}', [UserController::class, 'update']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
     // ========== READ ONLY (Admin & User) ==========
@@ -62,6 +66,10 @@ Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function ()
     // ADMIN ONLY (id_role = 1)
     // ================================
     Route::middleware(['check.role:1'])->group(function () {
+
+        // USER
+        Route::get('/users', [UserController::class, 'index']);
+        Route::put('/users/{id_user}', [UserController::class, 'updateRole']);
 
         // ROLE CRUD
         Route::get('/roles', [RoleController::class, 'index']);
